@@ -86,7 +86,6 @@
             height: 100%;
             background: linear-gradient(90deg, #3b82f6, #8b5cf6);
             border-radius: 8px;
-            -webkit-transition: width .5s ease;
             transition: width .5s ease
         }
 
@@ -128,20 +127,6 @@
             margin-bottom: 20px;
             -webkit-animation: fadeIn .4s ease;
             animation: fadeIn .4s ease
-        }
-
-        @-webkit-keyframes fadeIn {
-            from {
-                opacity: 0;
-                -webkit-transform: translateY(20px);
-                transform: translateY(20px)
-            }
-
-            to {
-                opacity: 1;
-                -webkit-transform: translateY(0);
-                transform: translateY(0)
-            }
         }
 
         @keyframes fadeIn {
@@ -199,7 +184,6 @@
             border-radius: 14px;
             padding: 12px 16px;
             cursor: pointer;
-            -webkit-transition: all .25s ease;
             transition: all .25s ease;
             font-size: .9rem;
             line-height: 1.4;
@@ -288,15 +272,7 @@
             border-radius: 12px;
             font-size: .9rem;
             font-weight: 600;
-            cursor: pointer;
-            -webkit-transition: all .3s ease;
-            transition: all .3s ease
-        }
-
-        .btn-next:hover {
-            -webkit-transform: translateY(-2px);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, .3)
+            cursor: pointer
         }
 
         .btn-next.show {
@@ -313,28 +289,6 @@
             margin-bottom: 10px
         }
 
-        .score-circle {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px auto;
-            position: relative
-        }
-
-        .score-circle::before {
-            content: '';
-            position: absolute;
-            top: -4px;
-            left: -4px;
-            right: -4px;
-            bottom: -4px;
-            border-radius: 50%;
-            z-index: 0
-        }
-
         .score-inner {
             width: 130px;
             height: 130px;
@@ -344,8 +298,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 1;
-            position: relative
+            margin: 20px auto;
+            border: 4px solid #3b82f6
         }
 
         .score-num {
@@ -365,22 +319,16 @@
             margin-bottom: 16px
         }
 
-        .btn-retry {
-            padding: 12px 36px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: #fff;
-            border: none;
-            border-radius: 14px;
-            font-size: .95rem;
-            font-weight: 600;
-            cursor: pointer;
-            -webkit-transition: all .3s ease;
-            transition: all .3s ease
-        }
-
-        .btn-retry:hover {
-            -webkit-transform: translateY(-2px);
-            transform: translateY(-2px)
+        .btn-home {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 24px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: .85rem
         }
 
         .review-section {
@@ -434,16 +382,13 @@
             text-transform: uppercase
         }
 
-        /* === REGISTRATION FORM === */
         .reg-card {
             background: linear-gradient(145deg, #131a2e, #1a2340);
             border: 1px solid #2d3a5c;
             border-radius: 20px;
             padding: 30px;
             max-width: 500px;
-            margin: 0 auto;
-            -webkit-animation: fadeIn .4s ease;
-            animation: fadeIn .4s ease
+            margin: 0 auto
         }
 
         .reg-card h2 {
@@ -485,8 +430,6 @@
             color: #f1f5f9;
             font-size: .9rem;
             font-family: 'Inter', sans-serif;
-            -webkit-transition: border-color .2s ease;
-            transition: border-color .2s ease;
             -webkit-appearance: none;
             appearance: none
         }
@@ -495,10 +438,6 @@
         .form-group select:focus {
             outline: none;
             border-color: #3b82f6
-        }
-
-        .form-group input::-webkit-input-placeholder {
-            color: #475569
         }
 
         .form-group input::placeholder {
@@ -527,22 +466,7 @@
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            -webkit-transition: all .3s ease;
-            transition: all .3s ease;
             margin-top: 6px
-        }
-
-        .btn-start:hover {
-            -webkit-transform: translateY(-2px);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, .3)
-        }
-
-        .btn-start:disabled {
-            opacity: .5;
-            cursor: not-allowed;
-            -webkit-transform: none;
-            transform: none
         }
 
         .form-error {
@@ -567,32 +491,6 @@
             border: 1px solid #166534;
             color: #86efac
         }
-
-        .sent-msg.err {
-            display: block;
-            background: #2d0a0a;
-            border: 1px solid #7f1d1d;
-            color: #fca5a5
-        }
-
-        .btn-home {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 10px 24px;
-            background: #1e293b;
-            color: #94a3b8;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            text-decoration: none;
-            font-size: .85rem;
-            -webkit-transition: all .2s ease;
-            transition: all .2s ease
-        }
-
-        .btn-home:hover {
-            background: #334155;
-            color: #f1f5f9
-        }
     </style>
 </head>
 
@@ -606,7 +504,6 @@
             <p>Sesión 1.1 · Módulo 1 · Evaluación de apropiación del conocimiento</p>
         </header>
 
-        <!-- REGISTRATION -->
         <div id="reg-section">
             <div class="reg-card">
                 <h2>📝 Registro del Estudiante</h2>
@@ -631,7 +528,6 @@
             </div>
         </div>
 
-        <!-- QUIZ -->
         <div id="quiz-section" style="display:none">
             <div class="progress-bar">
                 <div class="progress-fill" id="progress" style="width:0%"></div>
@@ -661,76 +557,81 @@
     <script>
         var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpmN-WKymCd00-TY7m9njIGAj88cUgbz4qoXqq7OAQm3Z79uEgW5knPnA3RbhtQ9yGxw/exec';
         var student = {};
-
         var questions = [
             {
-                q: "Según la norma EN 13306:2017, ¿cuál es la definición correcta de mantenimiento?",
-                ctx: "La norma EN 13306 establece la terminología oficial del mantenimiento a nivel internacional.",
-                opts: ["Conjunto de actividades para reparar equipos dañados", "Combinación de todas las acciones técnicas, administrativas y de gestión durante el ciclo de vida de un elemento, para conservarlo o devolverlo a un estado funcional", "Programa de cambio de piezas a intervalos regulares de tiempo", "Actividades de limpieza, lubricación y ajuste de maquinaria"],
-                ans: 1, exp: "La definición incluye acciones técnicas, administrativas Y de gestión. No es solo reparar; abarca todo el ciclo de vida del activo y busca que cumpla su función requerida."
+                q: "¿Cuál es la definición correcta de mantenimiento según la norma EN 13306?",
+                ctx: "La norma EN 13306 establece la terminología oficial del mantenimiento.",
+                opts: ["Conjunto de actividades para reparar equipos dañados", "Combinación de todas las acciones técnicas, administrativas y de gestión durante el ciclo de vida de un elemento, para conservarlo o devolverlo a un estado funcional", "Programa de cambio de piezas a intervalos regulares", "Actividades de limpieza, lubricación y ajuste de maquinaria"],
+                ans: 1, exp: "La definición incluye acciones técnicas, administrativas Y de gestión. No es solo reparar; abarca todo el ciclo de vida del activo."
             },
-            { q: "¿Qué es la «función requerida» de un equipo según EN 13306?", ctx: "Concepto fundamental que determina cuándo un equipo está en falla.", opts: ["La capacidad máxima del equipo según el fabricante", "La función principal y las funciones secundarias necesarias para proporcionar un servicio dado", "Solo la función de producción del equipo", "La función que el operador considera necesaria"], ans: 1, exp: "La función requerida incluye tanto la función principal (ej: bombear crudo) como las secundarias (contener fluido, operar sin vibración excesiva, no generar riesgos de seguridad)." },
-            { q: "Según la EN 13306, ¿cuándo ocurre una «falla» (avería)?", ctx: "El concepto de falla es central para toda la ingeniería de confiabilidad.", opts: ["Cuando el equipo se detiene completamente", "Cuando el equipo deja de cumplir CUALQUIERA de sus funciones requeridas", "Cuando el equipo necesita reparación mayor", "Cuando el equipo supera su vida útil de diseño"], ans: 1, exp: "Una falla ocurre cuando el equipo deja de cumplir cualquiera de sus funciones requeridas, no solo la principal." },
-            { q: "¿Cuál es la diferencia entre falla potencial y falla funcional?", ctx: "Concepto introducido por el RCM para definir el intervalo P-F.", opts: ["La falla potencial es menos grave que la funcional", "La falla potencial es una condición detectable que indica que la falla funcional está por ocurrir; la funcional es la pérdida total de la función", "La falla potencial es teórica y la funcional es real", "No hay diferencia, son sinónimos"], ans: 1, exp: "La falla potencial es la señal de advertencia. La funcional es cuando ya dejó de cumplir su función. El tiempo entre ambas es el intervalo P-F." },
-            { q: "Según la taxonomía de la EN 13306, ¿cuáles son las tres grandes ramas del mantenimiento?", ctx: "La norma clasifica el mantenimiento en un árbol jerárquico.", opts: ["Mecánico, eléctrico e instrumentación", "Correctivo, preventivo y mejorativo", "Reactivo, proactivo y autónomo", "Primario, secundario y terciario"], ans: 1, exp: "La EN 13306 clasifica: CORRECTIVO (después de la falla), PREVENTIVO (antes de la falla), y MEJORATIVO (para mejorar fiabilidad, mantenibilidad o seguridad)." },
-            { q: "¿Qué es el mantenimiento predeterminado según EN 13306?", ctx: "Es un subtipo del mantenimiento preventivo.", opts: ["Mantenimiento que se realiza cuando se detecta una falla", "Mantenimiento preventivo realizado a intervalos fijos de tiempo o uso, sin investigación previa del estado del elemento", "Mantenimiento que se programa según la condición del equipo", "Mantenimiento que mejora la fiabilidad del equipo"], ans: 1, exp: "El predeterminado se basa en calendario o uso (cada X horas, cada X meses), sin verificar si el equipo realmente lo necesita." },
-            { q: "¿Qué diferencia al mantenimiento predictivo del basado en condición?", ctx: "Ambos son subtipos del preventivo, pero hay una diferencia clave.", opts: ["Son exactamente lo mismo, solo cambia el nombre", "El predictivo añade la dimensión temporal: estima CUÁNDO ocurrirá la falla basándose en tendencias de degradación", "El predictivo usa sensores y el basado en condición usa inspección visual", "El basado en condición es más avanzado que el predictivo"], ans: 1, exp: "Basado en condición: detecta el estado actual. Predictivo: estima cuándo fallará basándose en tendencias." },
-            { q: "¿Qué es el mantenimiento mejorativo?", ctx: "Es la tercera rama principal según EN 13306.", opts: ["Mantenimiento que corrige defectos de fabricación", "Mantenimiento cuyo objetivo es mejorar la fiabilidad, mantenibilidad o seguridad sin cambiar la función requerida", "Mantenimiento que aumenta la capacidad de producción del equipo", "Mantenimiento que actualiza el software de control"], ans: 1, exp: "El mejorativo busca que el equipo sea MEJOR: que falle menos, sea más fácil de reparar o más seguro." },
-            { q: "Según la EN 13306, ¿cuál de estas NO es una tarea de mantenimiento?", ctx: "La norma define las actividades que constituyen mantenimiento.", opts: ["Inspección", "Monitoreo", "Diseño de nuevos productos", "Diagnóstico de averías"], ans: 2, exp: "El diseño de nuevos productos no es mantenimiento. Inspección, monitoreo, reparación, diagnóstico SÍ son tareas de mantenimiento." },
-            { q: "¿Qué descubrieron Nolan y Heap en su estudio de 1978?", ctx: "Estudio realizado para la FAA con datos de United Airlines.", opts: ["Que todos los equipos fallan por desgaste con el tiempo", "Que solo el 11% de las fallas siguen un patrón de desgaste predecible; el 89% son aleatorias", "Que el mantenimiento preventivo elimina todas las fallas", "Que los aviones no necesitan mantenimiento frecuente"], ans: 1, exp: "Si el 89% de las fallas son aleatorias, cambiar piezas por calendario solo funciona para el 11% de los modos de falla." },
-            { q: "¿Cuál es el patrón de falla más común según Nolan y Heap (68%)?", ctx: "Identificaron 6 patrones de falla diferentes.", opts: ["Curva de la bañera (mortalidad infantil + desgaste)", "Desgaste constante seguido de falla súbita", "Mortalidad infantil seguida de una probabilidad constante (meseta)", "Probabilidad de falla constante durante toda la vida"], ans: 2, exp: "El Patrón F (68%) muestra alta probabilidad de falla al ser NUEVO y luego se estabiliza." },
-            { q: "¿Cuál es la filosofía de la 1ª generación del mantenimiento?", ctx: "Período anterior a 1950.", opts: ["Prevenir con intervalos fijos", "Reparar cuando falle", "Monitorear la condición del equipo", "Predecir con inteligencia artificial"], ans: 1, exp: "La 1ª generación (antes de 1950) se basaba en «reparar cuando falle»." },
-            { q: "¿Qué metodología nació en la 3ª generación del mantenimiento (1975-2000)?", ctx: "Esta generación fue la respuesta al descubrimiento de Nolan y Heap.", opts: ["TPM y overhauls programados", "RCM (Mantenimiento Centrado en Confiabilidad) y monitoreo de condición", "Inteligencia Artificial y Gemelos Digitales", "Mantenimiento preventivo basado en tiempo"], ans: 1, exp: "La 3ª generación trajo el RCM de Moubray, el TPM de Nakajima, el FMEA, y las técnicas de monitoreo de condición." },
+
+            { q: "¿Qué es la «función requerida» de un equipo?", ctx: "Concepto fundamental que determina cuándo un equipo está en falla.", opts: ["La capacidad máxima del equipo según el fabricante", "La función principal y las funciones secundarias necesarias para proporcionar un servicio dado", "Solo la función de producción del equipo", "La función que el operador considera necesaria"], ans: 1, exp: "La función requerida incluye la función principal (ej: bombear crudo) y las secundarias (contener fluido, operar sin vibración excesiva, no generar riesgos)." },
+
+            { q: "¿Cuándo ocurre una «falla» (avería)?", ctx: "El concepto de falla es central para toda la ingeniería de confiabilidad.", opts: ["Cuando el equipo se detiene completamente", "Cuando el equipo deja de cumplir CUALQUIERA de sus funciones requeridas", "Cuando el equipo necesita reparación mayor", "Cuando el equipo supera su vida útil de diseño"], ans: 1, exp: "Una falla ocurre cuando el equipo deja de cumplir cualquiera de sus funciones requeridas, no solo la principal." },
+
+            { q: "¿Cuál es la diferencia entre falla potencial y falla funcional?", ctx: "Concepto del RCM para definir el intervalo P-F.", opts: ["La falla potencial es menos grave que la funcional", "La falla potencial es una condición detectable que indica que la falla funcional está por ocurrir; la funcional es la pérdida total de la función", "La falla potencial es teórica y la funcional es real", "No hay diferencia, son sinónimos"], ans: 1, exp: "La falla potencial es la señal de advertencia. La funcional es cuando ya dejó de cumplir su función. El tiempo entre ambas es el intervalo P-F." },
+
+            { q: "¿Cuáles son los 4 tipos fundamentales de mantenimiento?", ctx: "Clasificación universalmente utilizada en la industria.", opts: ["Mecánico, eléctrico, instrumentación y civil", "Correctivo, Preventivo, Predictivo y Proactivo", "Reactivo, autónomo, periódico y productivo", "Primario, secundario, terciario y cuaternario"], ans: 1, exp: "Los 4 tipos son: CORRECTIVO (después de la falla), PREVENTIVO (programado a intervalos fijos), PREDICTIVO (basado en monitoreo de condición) y PROACTIVO (eliminar causas raíz)." },
+
+            { q: "¿Qué caracteriza al mantenimiento preventivo?", ctx: "Uno de los 4 tipos fundamentales de mantenimiento.", opts: ["Se realiza cuando se detecta una falla", "Se realiza a intervalos fijos de tiempo o uso, independientemente de la condición del equipo", "Se programa según el monitoreo de la condición del equipo", "Busca mejorar la fiabilidad del equipo"], ans: 1, exp: "El preventivo se basa en calendario o uso (cada X horas, cada X meses), sin verificar si el equipo realmente lo necesita en ese momento." },
+
+            { q: "¿Qué diferencia al mantenimiento predictivo del preventivo?", ctx: "Ambos buscan actuar antes de la falla, pero con enfoque diferente.", opts: ["Son exactamente lo mismo, solo cambia el nombre", "El predictivo monitorea la condición real del equipo y predice cuándo fallará; el preventivo usa intervalos fijos", "El predictivo es más barato que el preventivo", "El preventivo es más avanzado que el predictivo"], ans: 1, exp: "Preventivo: cambio cada X horas (sin importar estado). Predictivo: monitoreo de vibración, temperatura, aceite para saber cuándo realmente necesita intervención." },
+
+            { q: "¿Qué es el mantenimiento proactivo?", ctx: "Es el tipo de mantenimiento más avanzado.", opts: ["Mantenimiento que corrige defectos de fabricación", "Mantenimiento enfocado en eliminar las causas raíz de las fallas y mejorar el diseño, la fiabilidad y la mantenibilidad del equipo", "Mantenimiento que aumenta la capacidad de producción del equipo", "Mantenimiento que actualiza el software de control"], ans: 1, exp: "El proactivo va a la raíz del problema: ¿por qué falla? ¿Cómo mejoramos el diseño para que no vuelva a fallar?" },
+
+            { q: "¿Cuál de estas NO es una tarea de mantenimiento?", ctx: "La norma EN 13306 define qué actividades constituyen mantenimiento.", opts: ["Inspección", "Monitoreo de condición", "Diseño de nuevos productos", "Diagnóstico de averías"], ans: 2, exp: "El diseño de nuevos productos no es mantenimiento. Inspección, monitoreo, reparación y diagnóstico SÍ lo son." },
+
+            { q: "¿Qué descubrieron Nolan y Heap en su estudio de 1978?", ctx: "Estudio realizado para la FAA con datos de United Airlines.", opts: ["Que todos los equipos fallan por desgaste con el tiempo", "Que solo el 11% de las fallas siguen un patrón de desgaste predecible; el 89% son aleatorias", "Que el mantenimiento preventivo elimina todas las fallas", "Que los aviones no necesitan mantenimiento frecuente"], ans: 1, exp: "Si el 89% de las fallas son aleatorias, cambiar piezas por calendario (preventivo) solo funciona para el 11% de los modos de falla. Por eso nace el predictivo." },
+
+            { q: "¿Cuál es el patrón de falla más común según Nolan y Heap (68%)?", ctx: "Identificaron 6 patrones de falla diferentes.", opts: ["Curva de la bañera (mortalidad infantil + desgaste)", "Desgaste constante seguido de falla súbita", "Mortalidad infantil seguida de una probabilidad constante (meseta)", "Probabilidad de falla constante durante toda la vida"], ans: 2, exp: "El Patrón F (68%) muestra alta probabilidad de falla al ser NUEVO y luego se estabiliza. Esto justifica el mantenimiento predictivo sobre el preventivo en muchos casos." },
+
+            { q: "¿Cuál es la filosofía de la 1ª generación del mantenimiento (antes de 1950)?", ctx: "Período de mantenimiento más básico.", opts: ["Prevenir con intervalos fijos", "Reparar cuando falle (solo correctivo)", "Monitorear la condición del equipo", "Predecir con inteligencia artificial"], ans: 1, exp: "La 1ª generación se basaba únicamente en «reparar cuando falle» — solo mantenimiento correctivo." },
+
+            { q: "¿Qué metodología nació en la 3ª generación del mantenimiento (1975-2000)?", ctx: "Esta generación fue la respuesta al descubrimiento de Nolan y Heap.", opts: ["TPM y overhauls programados exclusivamente", "RCM (Mantenimiento Centrado en Confiabilidad) y monitoreo de condición", "Inteligencia Artificial y Gemelos Digitales", "Solo mantenimiento preventivo basado en tiempo"], ans: 1, exp: "La 3ª generación trajo el RCM de Moubray, el TPM de Nakajima, el FMEA, y las técnicas de mantenimiento predictivo." },
+
             { q: "¿Qué significan las siglas OEE?", ctx: "Indicador clave del TPM (Mantenimiento Productivo Total).", opts: ["Overall Equipment Effectiveness (Efectividad Global del Equipo)", "Operational Engineering Evaluation", "Optimized Energy Efficiency", "Output Equipment Estimation"], ans: 0, exp: "OEE = Disponibilidad × Rendimiento × Calidad. El benchmark de clase mundial es ≥ 85%." },
-            { q: "¿Qué norma internacional establece los requisitos para la gestión de activos?", ctx: "Marco que integra el mantenimiento con la estrategia organizacional.", opts: ["ISO 9001", "ISO 14001", "ISO 55001", "ISO 45001"], ans: 2, exp: "ISO 55001 establece los requisitos del sistema de gestión de activos." },
-            { q: "¿Cuántas veces más costosa es una parada no programada comparada con una programada?", ctx: "Dato fundamental para justificar la inversión en mantenimiento preventivo.", opts: ["2 veces más", "5 veces más", "Hasta 10 veces más", "No hay diferencia significativa"], ans: 2, exp: "Una parada no programada cuesta hasta 10 veces más que una programada equivalente." },
-            { q: "¿Qué accidente industrial de 1988 fue causado por una falla en la comunicación del mantenimiento?", ctx: "Tragedia que cambió la regulación de seguridad offshore.", opts: ["Bhopal, India", "Chernóbil, Ucrania", "Piper Alpha, Mar del Norte", "Texas City, Estados Unidos"], ans: 2, exp: "Piper Alpha (1988): 167 muertos. Un mantenimiento a una válvula de alivio no fue comunicado al turno entrante." },
-            { q: "¿Qué porcentaje de las actividades de mantenimiento preventivo son innecesarias según Moubray?", ctx: "John Moubray es el autor de RCM II.", opts: ["10%", "20%", "30%", "50%"], ans: 2, exp: "Moubray estimó que el 30% de las actividades de mantenimiento preventivo que se realizan son innecesarias." },
-            { q: "¿Qué técnica de monitoreo de condición es la más utilizada en equipos rotativos?", ctx: "Las técnicas predictivas son fundamentales en la 3ª y 4ª generación.", opts: ["Termografía infrarroja", "Análisis de aceites", "Análisis de vibraciones mecánicas", "Ultrasonido industrial"], ans: 2, exp: "El análisis de vibraciones es la técnica reina del mantenimiento predictivo para equipos rotativos." },
-            { q: "¿Qué diferencia al mantenimiento prescriptivo del predictivo?", ctx: "La 4ª generación integra IIoT, IA y Big Data.", opts: ["El prescriptivo es más barato que el predictivo", "El prescriptivo no solo predice cuándo fallará, sino que recomienda QUÉ HACER para evitarlo", "El prescriptivo solo funciona con sensores", "No hay diferencia, son sinónimos"], ans: 1, exp: "El predictivo dice cuándo fallará. El prescriptivo dice cuándo fallará Y recomienda qué hacer, cuánto cuesta y qué riesgo hay si no se actúa." }
+
+            { q: "¿Qué norma internacional establece los requisitos para la gestión de activos?", ctx: "Marco que integra el mantenimiento con la estrategia organizacional.", opts: ["ISO 9001", "ISO 14001", "ISO 55001", "ISO 45001"], ans: 2, exp: "ISO 55001 establece los requisitos del sistema de gestión de activos, integrando el mantenimiento con la estrategia del negocio." },
+
+            { q: "¿Cuántas veces más costosa es una parada no programada comparada con una programada?", ctx: "Dato fundamental para justificar la inversión en mantenimiento preventivo y predictivo.", opts: ["2 veces más", "5 veces más", "Hasta 10 veces más", "No hay diferencia significativa"], ans: 2, exp: "Una parada no programada cuesta hasta 10 veces más: pérdida de producción + daño secundario + repuestos urgentes + mano de obra extra." },
+
+            { q: "¿Qué accidente industrial de 1988 fue causado por una falla en la comunicación del mantenimiento?", ctx: "Tragedia que cambió la regulación de seguridad offshore.", opts: ["Bhopal, India", "Chernóbil, Ucrania", "Piper Alpha, Mar del Norte", "Texas City, Estados Unidos"], ans: 2, exp: "Piper Alpha (1988): 167 muertos. Un mantenimiento a una válvula de alivio no fue comunicado al turno entrante, causando la explosión." },
+
+            { q: "¿Cuál de estos es un ejemplo de mantenimiento PREDICTIVO?", ctx: "El predictivo se basa en monitorear la condición real del equipo.", opts: ["Cambiar filtros cada 3 meses según calendario", "Reparar un motor que se quemó", "Analizar vibraciones de un rodamiento para detectar desgaste incipiente", "Rediseñar una guarda de seguridad para facilitar la inspección"], ans: 2, exp: "El análisis de vibraciones monitorea la condición real del equipo. Cambiar filtros cada 3 meses es preventivo, reparar el motor es correctivo, rediseñar la guarda es proactivo." },
+
+            { q: "¿Qué técnica de mantenimiento predictivo es la más utilizada en equipos rotativos?", ctx: "Las técnicas predictivas son fundamentales en la industria moderna.", opts: ["Termografía infrarroja", "Análisis de aceites", "Análisis de vibraciones mecánicas", "Ultrasonido industrial"], ans: 2, exp: "El análisis de vibraciones es la técnica reina del mantenimiento predictivo para equipos rotativos (motores, bombas, ventiladores, turbinas)." },
+
+            { q: "¿Qué diferencia al mantenimiento prescriptivo del predictivo en la 4ª generación?", ctx: "La 4ª generación integra IIoT, IA y Big Data.", opts: ["El prescriptivo es más barato que el predictivo", "El prescriptivo no solo predice cuándo fallará, sino que recomienda QUÉ HACER para evitarlo", "El prescriptivo solo funciona con sensores", "No hay diferencia, son sinónimos"], ans: 1, exp: "El predictivo dice cuándo fallará. El prescriptivo dice cuándo fallará Y recomienda qué acción tomar, cuánto cuesta cada opción y qué riesgo hay si no se actúa." }
         ];
 
         var current = 0, correct = 0, answered = false, timer = 0, timerInterval;
 
         function startQuiz() {
-            var n = document.getElementById('reg-nombre').value.trim();
-            var c = document.getElementById('reg-cedula').value.trim();
-            var p = document.getElementById('reg-programa').value;
-            var err = document.getElementById('reg-error');
+            var n = document.getElementById('reg-nombre').value.trim(), c = document.getElementById('reg-cedula').value.trim(), p = document.getElementById('reg-programa').value, err = document.getElementById('reg-error');
             if (!n || !c || !p) { err.textContent = '⚠️ Todos los campos son obligatorios'; err.style.display = 'block'; return }
             if (c.length < 5) { err.textContent = '⚠️ Ingresa un número de cédula válido'; err.style.display = 'block'; return }
             student = { nombre: n, cedula: c, programa: p };
-            document.getElementById('reg-section').style.display = 'none';
-            document.getElementById('quiz-section').style.display = 'block';
+            document.getElementById('reg-section').style.display = 'none'; document.getElementById('quiz-section').style.display = 'block';
             timerInterval = setInterval(function () { timer++; var m = Math.floor(timer / 60), s = timer % 60; document.getElementById('s-time').textContent = m + ':' + (s < 10 ? '0' : '') + s }, 1000);
             showQuestion();
         }
 
         function showQuestion() {
             if (current >= questions.length) { showResults(); return }
-            answered = false;
-            var q = questions[current];
+            answered = false; var q = questions[current];
             document.getElementById('s-current').textContent = current + 1;
             document.getElementById('progress').style.width = ((current) / questions.length * 100) + '%';
-            var area = document.getElementById('quiz-area');
             var html = '<div class="question-card"><div class="q-number">PREGUNTA ' + (current + 1) + ' DE ' + questions.length + '</div><div class="q-text">' + q.q + '</div>';
             if (q.ctx) html += '<div class="q-context">💡 ' + q.ctx + '</div>';
             html += '<div class="options">';
-            for (var i = 0; i < q.opts.length; i++) {
-                html += '<div class="option" data-idx="' + i + '" onclick="selectOption(this,' + i + ')"><div class="option-letter">' + String.fromCharCode(65 + i) + '</div><div>' + q.opts[i] + '</div></div>';
-            }
+            for (var i = 0; i < q.opts.length; i++) { html += '<div class="option" data-idx="' + i + '" onclick="selectOption(this,' + i + ')"><div class="option-letter">' + String.fromCharCode(65 + i) + '</div><div>' + q.opts[i] + '</div></div>' }
             html += '</div><div class="feedback" id="feedback"></div><button class="btn-next" id="btnNext" onclick="nextQ()">Siguiente →</button></div>';
-            area.innerHTML = html;
+            document.getElementById('quiz-area').innerHTML = html;
         }
 
         function selectOption(el, idx) {
-            if (answered) return; answered = true;
-            var q = questions[current], fb = document.getElementById('feedback'), opts = document.querySelectorAll('.option');
-            for (var i = 0; i < opts.length; i++) {
-                var oi = parseInt(opts[i].getAttribute('data-idx'));
-                if (oi === q.ans) opts[i].className = 'option correct';
-                if (oi === idx && idx !== q.ans) opts[i].className = 'option wrong';
-            }
+            if (answered) return; answered = true; var q = questions[current], fb = document.getElementById('feedback'), opts = document.querySelectorAll('.option');
+            for (var i = 0; i < opts.length; i++) { var oi = parseInt(opts[i].getAttribute('data-idx')); if (oi === q.ans) opts[i].className = 'option correct'; if (oi === idx && idx !== q.ans) opts[i].className = 'option wrong' }
             if (idx === q.ans) { correct++; document.getElementById('s-correct').textContent = correct; fb.className = 'feedback correct show'; fb.innerHTML = '<h4>✅ ¡Correcto!</h4>' + q.exp }
             else { fb.className = 'feedback wrong show'; fb.innerHTML = '<h4>❌ Incorrecto</h4>' + q.exp; questions[current].missed = true }
             document.getElementById('btnNext').className = 'btn-next show';
@@ -740,48 +641,31 @@
 
         function sendResults(pct, timeStr) {
             var data = { nombre: student.nombre, cedula: student.cedula, programa: student.programa, actividad: 'Quiz - Evolución del Mantenimiento', puntaje: correct, total: questions.length, porcentaje: pct + '%', tiempo: timeStr };
-            var x = new XMLHttpRequest();
-            x.open('POST', APPS_SCRIPT_URL, true);
-            x.setRequestHeader('Content-Type', 'text/plain');
-            x.onload = function () {
-                var msg = document.getElementById('sent-msg');
-                if (x.status === 200 || x.status === 302 || x.status === 0) { msg.className = 'sent-msg ok'; msg.textContent = '✅ Resultados guardados exitosamente' }
-                else { msg.className = 'sent-msg err'; msg.textContent = '⚠️ No se pudieron guardar los resultados (error de red)' }
-            };
-            x.onerror = function () {/* Google redirects, but data is saved */
-                var msg = document.getElementById('sent-msg'); msg.className = 'sent-msg ok'; msg.textContent = '✅ Resultados enviados'
-            };
+            var x = new XMLHttpRequest(); x.open('POST', APPS_SCRIPT_URL, true); x.setRequestHeader('Content-Type', 'text/plain');
+            x.onload = function () { var m = document.getElementById('sent-msg'); if (m) { m.className = 'sent-msg ok'; m.textContent = '✅ Resultados guardados exitosamente' } };
+            x.onerror = function () { var m = document.getElementById('sent-msg'); if (m) { m.className = 'sent-msg ok'; m.textContent = '✅ Resultados enviados' } };
             x.send(JSON.stringify(data));
         }
 
         function showResults() {
-            clearInterval(timerInterval);
-            document.getElementById('progress').style.width = '100%';
-            var pct = Math.round(correct / questions.length * 100);
-            var m = Math.floor(timer / 60), s = timer % 60;
-            var timeStr = m + ':' + (s < 10 ? '0' : '') + s;
+            clearInterval(timerInterval); document.getElementById('progress').style.width = '100%';
+            var pct = Math.round(correct / questions.length * 100), m = Math.floor(timer / 60), s = timer % 60, timeStr = m + ':' + (s < 10 ? '0' : '') + s;
             var msg = '', color = '';
             if (pct >= 90) { msg = '🏆 ¡Excelente! Dominas los conceptos fundamentales.'; color = '#22c55e' }
             else if (pct >= 70) { msg = '👏 ¡Muy bien! Buena comprensión con algunos puntos a reforzar.'; color = '#60a5fa' }
             else if (pct >= 50) { msg = '📚 Aceptable. Se recomienda revisar los temas marcados.'; color = '#f59e0b' }
             else { msg = '⚠️ Necesita refuerzo. Revisa las notas de la sesión 1.1.'; color = '#ef4444' }
-            var area = document.getElementById('quiz-area');
             var html = '<div class="question-card results"><h2 style="color:' + color + '">Resultados del Quiz</h2>';
             html += '<p style="color:#94a3b8;font-size:.85rem;margin-bottom:4px">' + student.nombre + ' (' + student.programa + ')</p>';
-            html += '<div class="score-circle"><div class="score-inner"><div class="score-num">' + correct + '/' + questions.length + '</div><div class="score-of">' + pct + '%</div></div></div>';
-            html += '<p class="result-msg">' + msg + '</p>';
-            html += '<p style="color:#64748b;font-size:.8rem;margin-bottom:16px">Tiempo: ' + timeStr + '</p>';
-            html += '<div id="sent-msg" class="sent-msg" style="display:none"></div>';
-            html += '<a href="index.html" class="btn-home" style="margin-top:16px;display:inline-block">← Volver al menú</a>';
+            html += '<div class="score-inner"><div class="score-num">' + correct + '/' + questions.length + '</div><div class="score-of">' + pct + '%</div></div>';
+            html += '<p class="result-msg">' + msg + '</p><p style="color:#64748b;font-size:.8rem;margin-bottom:16px">Tiempo: ' + timeStr + '</p>';
+            html += '<div id="sent-msg" class="sent-msg"></div>';
+            html += '<a href="index.html" class="btn-home">← Volver al menú</a>';
             html += '<div class="review-section"><h3>Revisión de respuestas</h3>';
-            for (var i = 0; i < questions.length; i++) {
-                var q = questions[i];
-                html += '<div class="review-item ' + (q.missed ? 'missed' : '') + '"><div class="ri-q">' + (i + 1) + '. ' + q.q + '</div><div class="ri-a">' + (q.missed ? '<span>✗ Incorrecta</span>' : '<span>✓ Correcta</span>') + ' — ' + q.opts[q.ans] + '</div></div>';
-            }
+            for (var i = 0; i < questions.length; i++) { var q = questions[i]; html += '<div class="review-item ' + (q.missed ? 'missed' : '') + '"><div class="ri-q">' + (i + 1) + '. ' + q.q + '</div><div class="ri-a">' + (q.missed ? '<span>✗ Incorrecta</span>' : '<span>✓ Correcta</span>') + ' — ' + q.opts[q.ans] + '</div></div>' }
             html += '</div></div>';
-            area.innerHTML = html;
+            document.getElementById('quiz-area').innerHTML = html;
             sendResults(pct, timeStr);
-            // Show sent message after slight delay
             setTimeout(function () { var el = document.getElementById('sent-msg'); if (el) el.style.display = 'block' }, 1500);
         }
     </script>

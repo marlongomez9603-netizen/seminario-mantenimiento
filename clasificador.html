@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Clasificador de Mantenimiento — EN 13306</title>
+    <title>Clasificador de Mantenimiento — Sesión 1.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -155,10 +155,6 @@
             border-color: #60a5fa
         }
 
-        .card.dragging {
-            opacity: .4
-        }
-
         .card.correct-anim {
             border-color: #22c55e !important;
             background: linear-gradient(145deg, #0d2818, #163828) !important
@@ -193,18 +189,10 @@
             cursor: pointer
         }
 
-        .category.drag-over {
-            border-color: #34d399;
-            background: linear-gradient(145deg, #0d2818, #132e20)
-        }
-
         .category h4 {
             font-size: .8rem;
             font-weight: 700;
-            margin-bottom: 3px;
-            display: flex;
-            align-items: center;
-            gap: 6px
+            margin-bottom: 3px
         }
 
         .category p {
@@ -236,27 +224,27 @@
             border-color: #3d1515
         }
 
-        .cat-predeterminado h4 {
+        .cat-preventivo h4 {
             color: #f59e0b
         }
 
-        .cat-predeterminado {
+        .cat-preventivo {
             border-color: #3d2e0a
         }
 
-        .cat-condicion h4 {
+        .cat-predictivo h4 {
             color: #3b82f6
         }
 
-        .cat-condicion {
+        .cat-predictivo {
             border-color: #1e3a6e
         }
 
-        .cat-mejorativo h4 {
+        .cat-proactivo h4 {
             color: #8b5cf6
         }
 
-        .cat-mejorativo {
+        .cat-proactivo {
             border-color: #2e1e6e
         }
 
@@ -301,25 +289,21 @@
 
         @-webkit-keyframes fadeIn {
             from {
-                opacity: 0;
-                -webkit-transform: translateY(10px)
+                opacity: 0
             }
 
             to {
-                opacity: 1;
-                -webkit-transform: translateY(0)
+                opacity: 1
             }
         }
 
         @keyframes fadeIn {
             from {
-                opacity: 0;
-                transform: translateY(10px)
+                opacity: 0
             }
 
             to {
-                opacity: 1;
-                transform: translateY(0)
+                opacity: 1
             }
         }
 
@@ -357,14 +341,7 @@
             border-radius: 12px;
             font-size: .85rem;
             font-weight: 600;
-            cursor: pointer;
-            -webkit-transition: all .3s ease;
-            transition: all .3s ease
-        }
-
-        .btn-reset:hover {
-            -webkit-transform: translateY(-2px);
-            transform: translateY(-2px)
+            cursor: pointer
         }
 
         .btn-home {
@@ -376,14 +353,7 @@
             border: 1px solid #334155;
             border-radius: 10px;
             text-decoration: none;
-            font-size: .8rem;
-            -webkit-transition: all .2s ease;
-            transition: all .2s ease
-        }
-
-        .btn-home:hover {
-            background: #334155;
-            color: #f1f5f9
+            font-size: .8rem
         }
 
         .sent-msg {
@@ -402,7 +372,6 @@
             color: #86efac
         }
 
-        /* Registration */
         .reg-card {
             background: linear-gradient(145deg, #131a2e, #1a2340);
             border: 1px solid #2d3a5c;
@@ -453,8 +422,6 @@
             color: #f1f5f9;
             font-size: .85rem;
             font-family: 'Inter', sans-serif;
-            -webkit-transition: border-color .2s ease;
-            transition: border-color .2s ease;
             -webkit-appearance: none;
             appearance: none
         }
@@ -495,15 +462,7 @@
             font-size: .95rem;
             font-weight: 700;
             cursor: pointer;
-            -webkit-transition: all .3s ease;
-            transition: all .3s ease;
             margin-top: 4px
-        }
-
-        .btn-start:hover {
-            -webkit-transform: translateY(-2px);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(52, 211, 153, .3)
         }
 
         .form-error {
@@ -531,10 +490,9 @@
         <header>
             <div class="logo">UNIPAZ · Seminario de Actualización 2026</div>
             <h1>🔧 Clasificador de Tipo de Mantenimiento</h1>
-            <p>Clasifica cada actividad en su categoría correcta según EN 13306:2017</p>
+            <p>Clasifica cada actividad en su categoría correcta: Correctivo, Preventivo, Predictivo o Proactivo</p>
         </header>
 
-        <!-- REGISTRATION -->
         <div id="reg-section">
             <div class="reg-card">
                 <h2>📝 Registro del Estudiante</h2>
@@ -559,14 +517,13 @@
             </div>
         </div>
 
-        <!-- GAME -->
         <div id="game-section" style="display:none">
             <div class="instructions">
                 <h3>📋 Instrucciones</h3>
                 <p>Toca una tarjeta y luego toca la categoría correcta: <strong
-                        style="color:#ef4444">Correctivo</strong>, <strong
-                        style="color:#f59e0b">Predeterminado</strong>, <strong style="color:#3b82f6">Basado en
-                        Condición</strong> o <strong style="color:#8b5cf6">Mejorativo</strong>.</p>
+                        style="color:#ef4444">Correctivo</strong>, <strong style="color:#f59e0b">Preventivo</strong>,
+                    <strong style="color:#3b82f6">Predictivo</strong> o <strong
+                        style="color:#8b5cf6">Proactivo</strong>.</p>
             </div>
             <div class="stats-bar">
                 <div class="stat">
@@ -592,26 +549,25 @@
                     <div id="pool"></div>
                 </div>
                 <div class="categories">
-                    <div class="category cat-correctivo" data-cat="correctivo" onclick="touchDrop('correctivo')">
+                    <div class="category cat-correctivo" onclick="touchDrop('correctivo')">
                         <h4>🔴 Correctivo</h4>
-                        <p>Después de la falla</p>
+                        <p>Se repara DESPUÉS de que ocurre la falla</p>
                         <div class="cat-items" id="items-correctivo"></div>
                     </div>
-                    <div class="category cat-predeterminado" data-cat="predeterminado"
-                        onclick="touchDrop('predeterminado')">
-                        <h4>🟡 Predeterminado</h4>
-                        <p>Intervalos fijos de tiempo</p>
-                        <div class="cat-items" id="items-predeterminado"></div>
+                    <div class="category cat-preventivo" onclick="touchDrop('preventivo')">
+                        <h4>🟡 Preventivo</h4>
+                        <p>Programado a intervalos fijos de tiempo o uso</p>
+                        <div class="cat-items" id="items-preventivo"></div>
                     </div>
-                    <div class="category cat-condicion" data-cat="condicion" onclick="touchDrop('condicion')">
-                        <h4>🔵 Basado en Condición</h4>
-                        <p>Según estado real del equipo</p>
-                        <div class="cat-items" id="items-condicion"></div>
+                    <div class="category cat-predictivo" onclick="touchDrop('predictivo')">
+                        <h4>🔵 Predictivo</h4>
+                        <p>Basado en monitoreo de la condición real del equipo</p>
+                        <div class="cat-items" id="items-predictivo"></div>
                     </div>
-                    <div class="category cat-mejorativo" data-cat="mejorativo" onclick="touchDrop('mejorativo')">
-                        <h4>🟣 Mejorativo</h4>
-                        <p>Mejorar fiabilidad o seguridad</p>
-                        <div class="cat-items" id="items-mejorativo"></div>
+                    <div class="category cat-proactivo" onclick="touchDrop('proactivo')">
+                        <h4>🟣 Proactivo</h4>
+                        <p>Eliminar causas raíz, mejorar diseño y fiabilidad</p>
+                        <div class="cat-items" id="items-proactivo"></div>
                     </div>
                 </div>
             </div>
@@ -628,21 +584,21 @@
         var student = {};
         var activities = [
             { text: "Reparar bomba centrífuga que dejó de funcionar por falla de rodamientos", cat: "correctivo", why: "Se actúa DESPUÉS de que la bomba falló." },
-            { text: "Cambiar aceite del compresor cada 500 horas de operación según manual", cat: "predeterminado", why: "Intervalos fijos (500 horas) sin verificar condición." },
-            { text: "Tomar mediciones de vibración mensual en motores eléctricos", cat: "condicion", why: "Se monitorea la condición real del equipo." },
-            { text: "Instalar sensor de vibración permanente en bomba crítica", cat: "mejorativo", why: "Mejora la capacidad de monitoreo (mantenibilidad)." },
-            { text: "Atender de urgencia a las 2 AM un motor quemado que paralizó producción", cat: "correctivo", why: "Correctivo inmediato: sin demora después de falla grave." },
-            { text: "Lubricar rodamientos de ventiladores cada martes según programa", cat: "predeterminado", why: "Calendario fijo sin evaluar necesidad." },
-            { text: "Analizar muestras de aceite para detectar partículas de desgaste", cat: "condicion", why: "Evalúa condición del lubricante para decidir acciones." },
-            { text: "Cambiar sello mecánico por uno de carburo de silicio que dura 3 veces más", cat: "mejorativo", why: "Mejora fiabilidad sin cambiar la función." },
-            { text: "Programar reparación de bomba de respaldo para próximo paro planificado", cat: "correctivo", why: "Correctivo DIFERIDO: ya falló pero hay respaldo." },
-            { text: "Realizar overhaul completo de turbina cada 20.000 horas", cat: "predeterminado", why: "Intervalos fijos de uso (20.000 horas)." },
-            { text: "Monitorear temperaturas de rodamientos en línea 24/7 con alarmas", cat: "condicion", why: "Monitoreo continuo con detección automática." },
-            { text: "Rediseñar guarda de seguridad para permitir inspección sin desmontarla", cat: "mejorativo", why: "Mejora mantenibilidad y seguridad." },
-            { text: "Reemplazar filtros de aire acondicionado cada 3 meses", cat: "predeterminado", why: "Intervalo fijo de tiempo (3 meses)." },
-            { text: "Usar termografía infrarroja para detectar puntos calientes en tableros", cat: "condicion", why: "Evalúa estado real de conexiones eléctricas." },
-            { text: "Reparar fuga de vapor en válvula detectada durante ronda", cat: "correctivo", why: "Correctivo: la fuga (falla) ya existe." },
-            { text: "Añadir puntos de drenaje en tubería para facilitar mantenimiento", cat: "mejorativo", why: "Mejora mantenibilidad del sistema." }
+            { text: "Cambiar aceite del compresor cada 500 horas de operación según manual", cat: "preventivo", why: "Se realiza a intervalos fijos (500 horas) sin verificar condición del aceite." },
+            { text: "Tomar mediciones de vibración mensual en motores eléctricos para detectar degradación", cat: "predictivo", why: "Se monitorea la condición real del equipo para predecir fallas." },
+            { text: "Instalar sensor de vibración permanente en bomba crítica que no tenía monitoreo", cat: "proactivo", why: "Mejora la capacidad de monitoreo del equipo, eliminando puntos ciegos." },
+            { text: "Atender de urgencia a las 2 AM un motor quemado que paralizó producción", cat: "correctivo", why: "Correctivo inmediato: se actúa sin demora después de una falla grave." },
+            { text: "Lubricar rodamientos de ventiladores cada martes según programa semanal", cat: "preventivo", why: "Calendario fijo (cada martes) sin evaluar si realmente necesita lubricación." },
+            { text: "Analizar muestras de aceite para detectar partículas de desgaste y contaminación", cat: "predictivo", why: "Evalúa la condición del lubricante y partículas para predecir desgaste interno." },
+            { text: "Cambiar sello mecánico por uno de carburo de silicio que dura 3 veces más", cat: "proactivo", why: "Mejora el diseño del equipo para que falle menos (mayor fiabilidad)." },
+            { text: "Programar reparación de bomba de respaldo para próximo paro planificado", cat: "correctivo", why: "Correctivo DIFERIDO: la bomba ya falló pero hay respaldo, se programa la reparación." },
+            { text: "Realizar overhaul completo de turbina cada 20.000 horas según programa", cat: "preventivo", why: "A intervalos fijos de uso (20.000 horas) sin evaluar condición de la turbina." },
+            { text: "Monitorear temperaturas de rodamientos en línea 24/7 con alarmas automáticas", cat: "predictivo", why: "Monitoreo continuo de condición con detección automática de anomalías." },
+            { text: "Rediseñar guarda de seguridad para permitir inspección sin desmontarla", cat: "proactivo", why: "Mejora el diseño para facilitar la inspección (mayor mantenibilidad y seguridad)." },
+            { text: "Reemplazar filtros de aire acondicionado cada 3 meses según calendario", cat: "preventivo", why: "Intervalo fijo de tiempo (3 meses) sin verificar si el filtro necesita cambio." },
+            { text: "Usar termografía infrarroja para detectar puntos calientes en tableros eléctricos", cat: "predictivo", why: "Técnica de monitoreo que evalúa el estado real de las conexiones eléctricas." },
+            { text: "Reparar fuga de vapor en válvula detectada durante ronda de inspección", cat: "correctivo", why: "Correctivo: la fuga (falla) ya existe y se procede a repararla." },
+            { text: "Añadir puntos de drenaje en tubería para facilitar el mantenimiento del sistema", cat: "proactivo", why: "Mejora el diseño del sistema para hacer más fácil el mantenimiento futuro." }
         ];
         var placed = 0, correct = 0, selectedCard = null, startTime = 0;
 
@@ -656,8 +612,7 @@
             student = { nombre: n, cedula: c, programa: p };
             document.getElementById('reg-section').style.display = 'none';
             document.getElementById('game-section').style.display = 'block';
-            startTime = Date.now();
-            init();
+            startTime = Date.now(); init();
         }
 
         function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t } return a }
@@ -666,47 +621,28 @@
             var pool = document.getElementById('pool'); pool.innerHTML = '';
             shuffle(activities);
             for (var i = 0; i < activities.length; i++) {
-                var a = activities[i];
-                var div = document.createElement('div');
-                div.className = 'card';
-                div.setAttribute('data-idx', i);
-                div.textContent = a.text;
-                div.onclick = (function (d) {
-                    return function () {
-                        if (selectedCard === d) { d.className = 'card'; selectedCard = null }
-                        else { if (selectedCard) selectedCard.className = 'card'; selectedCard = d; d.className = 'card selected' }
-                    }
-                })(div);
+                var div = document.createElement('div'); div.className = 'card'; div.setAttribute('data-idx', i); div.textContent = activities[i].text;
+                div.onclick = (function (d) { return function () { if (selectedCard === d) { d.className = 'card'; selectedCard = null } else { if (selectedCard) selectedCard.className = 'card'; selectedCard = d; d.className = 'card selected' } } })(div);
                 pool.appendChild(div);
             }
         }
 
         function touchDrop(cat) {
             if (!selectedCard) return;
-            var idx = parseInt(selectedCard.getAttribute('data-idx'));
-            var a = activities[idx];
-            var card = selectedCard;
-            selectedCard = null;
+            var idx = parseInt(selectedCard.getAttribute('data-idx')); var a = activities[idx]; var card = selectedCard; selectedCard = null;
             if (!card.parentElement || card.parentElement.id !== 'pool') return;
-            placed++;
-            var isCorrect = a.cat === cat;
-            if (isCorrect) correct++;
-            card.onclick = null; card.style.cursor = 'default';
-            card.className = 'card ' + (isCorrect ? 'correct-anim' : 'wrong-anim');
+            placed++; var isCorrect = a.cat === cat; if (isCorrect) correct++;
+            card.onclick = null; card.style.cursor = 'default'; card.className = 'card ' + (isCorrect ? 'correct-anim' : 'wrong-anim');
             var targetId = isCorrect ? 'items-' + cat : 'items-' + a.cat;
             var clone = card.cloneNode(true); clone.className = 'card ' + (isCorrect ? 'correct-anim' : 'wrong-anim'); clone.style.cursor = 'default';
-            var hint = document.createElement('div');
-            hint.style.cssText = 'font-size:.65rem;margin-top:3px;font-style:italic;color:' + (isCorrect ? '#86efac' : '#fca5a5');
-            hint.textContent = (isCorrect ? '✓ ' : '✗ ') + a.why;
-            clone.appendChild(hint);
+            var hint = document.createElement('div'); hint.style.cssText = 'font-size:.65rem;margin-top:3px;font-style:italic;color:' + (isCorrect ? '#86efac' : '#fca5a5');
+            hint.textContent = (isCorrect ? '✓ ' : '✗ ') + a.why; clone.appendChild(hint);
             setTimeout(function () { card.parentElement.removeChild(card); document.getElementById(targetId).appendChild(clone); updateStats(); if (placed >= activities.length) showResult() }, 350);
         }
 
         function updateStats() {
-            document.getElementById('s-placed').textContent = placed;
-            document.getElementById('s-correct').textContent = correct;
-            document.getElementById('s-pct').textContent = placed ? Math.round(correct / placed * 100) + '%' : '0%';
-            document.getElementById('remaining').textContent = activities.length - placed;
+            document.getElementById('s-placed').textContent = placed; document.getElementById('s-correct').textContent = correct;
+            document.getElementById('s-pct').textContent = placed ? Math.round(correct / placed * 100) + '%' : '0%'; document.getElementById('remaining').textContent = activities.length - placed;
         }
 
         function sendResults(pct, timeStr) {
@@ -718,29 +654,23 @@
         }
 
         function showResult() {
-            var elapsed = Math.round((Date.now() - startTime) / 1000);
-            var m = Math.floor(elapsed / 60), s = elapsed % 60;
-            var timeStr = m + ':' + (s < 10 ? '0' : '') + s;
-            var pct = Math.round(correct / activities.length * 100);
-            var msg = document.getElementById('resultMsg'); var cls = '', icon = '', txt = '';
-            if (pct >= 90) { cls = 'success'; icon = '🏆'; txt = '¡Excelente! Dominas la taxonomía de mantenimiento según EN 13306.' }
+            var elapsed = Math.round((Date.now() - startTime) / 1000); var m = Math.floor(elapsed / 60), s = elapsed % 60; var timeStr = m + ':' + (s < 10 ? '0' : '') + s;
+            var pct = Math.round(correct / activities.length * 100); var msg = document.getElementById('resultMsg'); var cls = '', icon = '', txt = '';
+            if (pct >= 90) { cls = 'success'; icon = '🏆'; txt = '¡Excelente! Dominas la clasificación de tipos de mantenimiento.' }
             else if (pct >= 70) { cls = 'success'; icon = '👏'; txt = '¡Muy bien! Buena comprensión de los tipos de mantenimiento.' }
-            else if (pct >= 50) { cls = 'partial'; icon = '📚'; txt = 'Aceptable. Revisa las diferencias entre predeterminado y basado en condición.' }
-            else { cls = 'partial'; icon = '⚠️'; txt = 'Necesita refuerzo. Revisa la taxonomía de EN 13306.' }
+            else if (pct >= 50) { cls = 'partial'; icon = '📚'; txt = 'Aceptable. Revisa las diferencias entre preventivo y predictivo.' }
+            else { cls = 'partial'; icon = '⚠️'; txt = 'Necesita refuerzo. Revisa los 4 tipos de mantenimiento en las notas de clase.' }
             msg.className = 'result-msg ' + cls + ' show';
             msg.innerHTML = '<h3>' + icon + ' Resultado: ' + correct + '/' + activities.length + ' (' + pct + '%)</h3><p>' + student.nombre + ' · ' + student.programa + '</p><p style="margin-top:4px">' + txt + '</p><p style="color:#64748b;font-size:.75rem;margin-top:6px">Tiempo: ' + timeStr + '</p>';
-            document.getElementById('btnReset').style.display = 'block';
-            document.getElementById('btnHome').style.display = 'inline-block';
+            document.getElementById('btnReset').style.display = 'block'; document.getElementById('btnHome').style.display = 'inline-block';
             sendResults(pct, timeStr);
         }
 
         function resetGame() {
             placed = 0; correct = 0; selectedCard = null; startTime = Date.now();
-            document.getElementById('resultMsg').className = 'result-msg';
-            document.getElementById('btnReset').style.display = 'none';
-            document.getElementById('btnHome').style.display = 'none';
-            document.getElementById('sent-msg').className = 'sent-msg';
-            ['correctivo', 'predeterminado', 'condicion', 'mejorativo'].forEach(function (c) { document.getElementById('items-' + c).innerHTML = '' });
+            document.getElementById('resultMsg').className = 'result-msg'; document.getElementById('btnReset').style.display = 'none';
+            document.getElementById('btnHome').style.display = 'none'; document.getElementById('sent-msg').className = 'sent-msg';
+            ['correctivo', 'preventivo', 'predictivo', 'proactivo'].forEach(function (c) { document.getElementById('items-' + c).innerHTML = '' });
             updateStats(); init()
         }
     </script>
