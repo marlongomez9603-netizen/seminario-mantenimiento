@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Actividades Interactivas — Gestión de Confiabilidad y Mantenimiento</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0e1a;
+            color: #e0e6f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden
+        }
+
+        .bg {
+            position: fixed;
+            top: -300px;
+            right: -300px;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(59, 130, 246, .12), transparent 70%);
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .bg2 {
+            position: fixed;
+            bottom: -300px;
+            left: -200px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(16, 185, 129, .08), transparent 70%);
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .main {
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            text-align: center
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: .65rem;
+            color: #94a3b8;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            background: #1e293b;
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid #334155
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #60a5fa, #34d399, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            line-height: 1.3
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: .9rem;
+            margin-bottom: 32px;
+            line-height: 1.5
+        }
+
+        .cards {
+            display: flex;
+            flex-direction: column;
+            gap: 16px
+        }
+
+        .card {
+            background: linear-gradient(145deg, #131a2e, #1a2340);
+            border: 1px solid #2d3a5c;
+            border-radius: 20px;
+            padding: 28px;
+            text-decoration: none;
+            color: inherit;
+            transition: all .3s cubic-bezier(.4, 0, .2, 1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 20px 20px 0 0;
+            opacity: 0;
+            transition: opacity .3s ease
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+            box-shadow: 0 12px 40px rgba(59, 130, 246, .15)
+        }
+
+        .card:hover::before {
+            opacity: 1
+        }
+
+        .card:active {
+            transform: translateY(-1px)
+        }
+
+        .card-icon {
+            min-width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0
+        }
+
+        .card-1 .card-icon {
+            background: linear-gradient(135deg, #1e3a6e, #2d4a8e)
+        }
+
+        .card-1::before {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6)
+        }
+
+        .card-2 .card-icon {
+            background: linear-gradient(135deg, #0d3328, #165838)
+        }
+
+        .card-2::before {
+            background: linear-gradient(90deg, #34d399, #3b82f6)
+        }
+
+        .card-body h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #f1f5f9
+        }
+
+        .card-body p {
+            font-size: .82rem;
+            color: #94a3b8;
+            line-height: 1.5
+        }
+
+        .card-body .tag {
+            display: inline-block;
+            font-size: .65rem;
+            padding: 2px 10px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-weight: 600;
+            letter-spacing: .5px
+        }
+
+        .card-1 .tag {
+            background: rgba(59, 130, 246, .15);
+            color: #60a5fa
+        }
+
+        .card-2 .tag {
+            background: rgba(52, 211, 153, .15);
+            color: #34d399
+        }
+
+        .arrow {
+            color: #334155;
+            font-size: 1.4rem;
+            transition: all .3s ease;
+            margin-left: auto;
+            flex-shrink: 0
+        }
+
+        .card:hover .arrow {
+            color: #60a5fa;
+            transform: translateX(4px)
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #334155;
+            font-size: .7rem;
+            line-height: 1.6
+        }
+
+        footer a {
+            color: #475569;
+            text-decoration: none
+        }
+
+        @media(max-width:500px) {
+            h1 {
+                font-size: 1.4rem
+            }
+
+            .card {
+                padding: 20px;
+                gap: 14px
+            }
+
+            .card-icon {
+                min-width: 50px;
+                height: 50px;
+                font-size: 1.5rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg"></div>
+    <div class="bg2"></div>
+    <div class="main">
+        <div class="badge">UNIPAZ · Seminario 2026</div>
+        <h1>Actividades Interactivas</h1>
+        <p class="subtitle">Gestión Avanzada de Confiabilidad y Mantenimiento Inteligente<br>Sesión 1.1 — Evolución del
+            Mantenimiento Industrial</p>
+
+        <div class="cards">
+            <a href="quiz.html" class="card card-1">
+                <div class="card-icon">🧠</div>
+                <div class="card-body">
+                    <h2>Quiz: Evolución del Mantenimiento</h2>
+                    <p>20 preguntas de selección múltiple sobre EN 13306, tipos de mantenimiento, Nolan &amp; Heap, ISO
+                        55000, OEE y más. Con retroalimentación inmediata y revisión al final.</p>
+                    <span class="tag">20 PREGUNTAS · ~15 MIN</span>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+
+            <a href="clasificador.html" class="card card-2">
+                <div class="card-icon">🔧</div>
+                <div class="card-body">
+                    <h2>Clasificador de Tipos de Mantenimiento</h2>
+                    <p>Clasifica 16 actividades reales de mantenimiento en su categoría correcta según EN 13306:
+                        correctivo, predeterminado, basado en condición o mejorativo.</p>
+                    <span class="tag">DRAG &amp; DROP · ~10 MIN</span>
+                </div>
+                <span class="arrow">→</span>
+            </a>
+        </div>
+
+        <footer>
+            <p>Instituto Universitario de la Paz — UNIPAZ</p>
+            <p>Escuela de Ingeniería · Barrancabermeja, Santander</p>
+        </footer>
+    </div>
+</body>
+
+</html>
