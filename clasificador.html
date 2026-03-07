@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Clasificador de Mantenimiento — EN 13306</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -42,72 +43,73 @@
 
         header {
             text-align: center;
-            padding: 24px 0 16px
+            padding: 20px 0 12px
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             background: linear-gradient(135deg, #34d399, #3b82f6);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 6px
+            margin-bottom: 4px
         }
 
         header p {
             color: #94a3b8;
-            font-size: .85rem;
-            line-height: 1.5;
-            max-width: 700px;
+            font-size: .8rem;
+            line-height: 1.4;
+            max-width: 600px;
             margin: 0 auto
         }
 
         .logo {
             text-align: center;
-            font-size: .7rem;
+            font-size: .65rem;
             color: #475569;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 8px
+            margin-bottom: 6px
         }
 
         .instructions {
             background: linear-gradient(145deg, #131a2e, #1a2340);
             border: 1px solid #2d3a5c;
             border-radius: 16px;
-            padding: 20px;
-            margin: 16px 0;
+            padding: 16px;
+            margin: 12px 0;
             text-align: center
         }
 
         .instructions h3 {
             color: #34d399;
-            margin-bottom: 8px;
-            font-size: 1rem
+            margin-bottom: 6px;
+            font-size: .9rem
         }
 
         .instructions p {
             color: #94a3b8;
-            font-size: .85rem;
-            line-height: 1.5
+            font-size: .8rem;
+            line-height: 1.4
         }
 
         .game-area {
             display: flex;
-            gap: 20px;
-            margin-top: 16px;
+            gap: 16px;
+            margin-top: 12px;
             flex-wrap: wrap
         }
 
         .cards-pool {
             flex: 1;
-            min-width: 300px
+            min-width: 280px
         }
 
         .cards-pool h3 {
             color: #60a5fa;
-            font-size: .9rem;
-            margin-bottom: 12px;
+            font-size: .85rem;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             gap: 8px
@@ -115,139 +117,115 @@
 
         .cards-pool h3 span {
             background: #1e3a6e;
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 10px;
-            font-size: .75rem
+            font-size: .7rem
         }
 
         #pool {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            min-height: 60px;
-            padding: 10px;
+            gap: 8px;
+            min-height: 50px;
+            padding: 8px;
             background: #0f172a;
-            border-radius: 14px;
+            border-radius: 12px;
             border: 2px dashed #2d3a5c
         }
 
         .card {
             background: linear-gradient(145deg, #1e293b, #253352);
             border: 2px solid #334155;
-            border-radius: 12px;
-            padding: 12px 16px;
-            cursor: grab;
-            font-size: .82rem;
-            line-height: 1.4;
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: .78rem;
+            line-height: 1.3;
+            -webkit-transition: all .2s ease;
             transition: all .2s ease;
+            -webkit-user-select: none;
             user-select: none;
-            max-width: 280px
+            max-width: 260px;
+            -webkit-tap-highlight-color: transparent
         }
 
         .card:hover {
+            -webkit-transform: translateY(-2px);
             transform: translateY(-2px);
-            border-color: #60a5fa;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, .2)
+            border-color: #60a5fa
         }
 
         .card.dragging {
-            opacity: .4;
-            transform: scale(.95)
+            opacity: .4
         }
 
         .card.correct-anim {
             border-color: #22c55e !important;
-            background: linear-gradient(145deg, #0d2818, #163828) !important;
-            animation: correctPop .4s ease
+            background: linear-gradient(145deg, #0d2818, #163828) !important
         }
 
         .card.wrong-anim {
             border-color: #ef4444 !important;
-            background: linear-gradient(145deg, #2d0a0a, #3d1515) !important;
-            animation: shake .4s ease
+            background: linear-gradient(145deg, #2d0a0a, #3d1515) !important
         }
 
-        @keyframes correctPop {
-            0% {
-                transform: scale(1)
-            }
-
-            50% {
-                transform: scale(1.05)
-            }
-
-            100% {
-                transform: scale(1)
-            }
-        }
-
-        @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0)
-            }
-
-            25% {
-                transform: translateX(-6px)
-            }
-
-            75% {
-                transform: translateX(6px)
-            }
+        .card.selected {
+            outline: 2px solid #34d399;
+            outline-offset: 2px
         }
 
         .categories {
             flex: 1.3;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            min-width: 400px
+            gap: 12px;
+            min-width: 360px
         }
 
         .category {
             background: linear-gradient(145deg, #131a2e, #1a2340);
             border: 2px solid #2d3a5c;
-            border-radius: 16px;
-            padding: 14px;
+            border-radius: 14px;
+            padding: 12px;
+            -webkit-transition: all .3s ease;
             transition: all .3s ease;
-            min-height: 140px
+            min-height: 120px;
+            cursor: pointer
         }
 
         .category.drag-over {
             border-color: #34d399;
-            background: linear-gradient(145deg, #0d2818, #132e20);
-            box-shadow: 0 0 20px rgba(52, 211, 153, .1)
+            background: linear-gradient(145deg, #0d2818, #132e20)
         }
 
         .category h4 {
-            font-size: .85rem;
+            font-size: .8rem;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             display: flex;
             align-items: center;
-            gap: 8px
+            gap: 6px
         }
 
         .category p {
-            font-size: .7rem;
+            font-size: .65rem;
             color: #64748b;
-            margin-bottom: 10px;
-            line-height: 1.3
+            margin-bottom: 8px;
+            line-height: 1.2
         }
 
         .cat-items {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            min-height: 30px
+            gap: 5px;
+            min-height: 20px
         }
 
         .cat-items .card {
             max-width: 100%;
             cursor: default;
-            font-size: .78rem;
-            padding: 8px 12px
+            font-size: .72rem;
+            padding: 6px 10px
         }
 
         .cat-correctivo h4 {
@@ -284,28 +262,28 @@
 
         .stats-bar {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             justify-content: center;
-            margin: 16px 0;
+            margin: 12px 0;
             flex-wrap: wrap
         }
 
         .stat {
             background: #1e293b;
             border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 8px 18px;
+            border-radius: 10px;
+            padding: 6px 14px;
             text-align: center
         }
 
         .stat-val {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #34d399
         }
 
         .stat-label {
-            font-size: .65rem;
+            font-size: .6rem;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 1px
@@ -313,11 +291,24 @@
 
         .result-msg {
             text-align: center;
-            padding: 20px;
-            margin-top: 14px;
-            border-radius: 16px;
+            padding: 16px;
+            margin-top: 12px;
+            border-radius: 14px;
             display: none;
+            -webkit-animation: fadeIn .5s ease;
             animation: fadeIn .5s ease
+        }
+
+        @-webkit-keyframes fadeIn {
+            from {
+                opacity: 0;
+                -webkit-transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                -webkit-transform: translateY(0)
+            }
         }
 
         @keyframes fadeIn {
@@ -347,46 +338,179 @@
         }
 
         .result-msg h3 {
-            margin-bottom: 6px
+            margin-bottom: 4px
         }
 
         .result-msg p {
             color: #94a3b8;
-            font-size: .85rem;
-            line-height: 1.5
+            font-size: .8rem;
+            line-height: 1.4
         }
 
         .btn-reset {
             display: block;
-            margin: 16px auto;
-            padding: 12px 32px;
+            margin: 12px auto;
+            padding: 10px 28px;
             background: linear-gradient(135deg, #34d399, #3b82f6);
             color: #fff;
             border: none;
             border-radius: 12px;
-            font-size: .9rem;
+            font-size: .85rem;
             font-weight: 600;
             cursor: pointer;
+            -webkit-transition: all .3s ease;
             transition: all .3s ease
         }
 
         .btn-reset:hover {
+            -webkit-transform: translateY(-2px);
+            transform: translateY(-2px)
+        }
+
+        .btn-home {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 8px 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: .8rem;
+            -webkit-transition: all .2s ease;
+            transition: all .2s ease
+        }
+
+        .btn-home:hover {
+            background: #334155;
+            color: #f1f5f9
+        }
+
+        .sent-msg {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: .8rem;
+            display: none
+        }
+
+        .sent-msg.ok {
+            display: block;
+            background: #0d2818;
+            border: 1px solid #166534;
+            color: #86efac
+        }
+
+        /* Registration */
+        .reg-card {
+            background: linear-gradient(145deg, #131a2e, #1a2340);
+            border: 1px solid #2d3a5c;
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 500px;
+            margin: 20px auto;
+            -webkit-animation: fadeIn .4s ease;
+            animation: fadeIn .4s ease
+        }
+
+        .reg-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4px;
+            color: #f1f5f9
+        }
+
+        .reg-card .sub {
+            text-align: center;
+            color: #94a3b8;
+            font-size: .78rem;
+            margin-bottom: 16px
+        }
+
+        .form-group {
+            margin-bottom: 12px
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0f172a;
+            border: 2px solid #2d3a5c;
+            border-radius: 10px;
+            color: #f1f5f9;
+            font-size: .85rem;
+            font-family: 'Inter', sans-serif;
+            -webkit-transition: border-color .2s ease;
+            transition: border-color .2s ease;
+            -webkit-appearance: none;
+            appearance: none
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #34d399
+        }
+
+        .form-group input::-webkit-input-placeholder {
+            color: #475569
+        }
+
+        .form-group input::placeholder {
+            color: #475569
+        }
+
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px
+        }
+
+        .form-group select option {
+            background: #0f172a;
+            color: #f1f5f9
+        }
+
+        .btn-start {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #34d399, #3b82f6);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: .95rem;
+            font-weight: 700;
+            cursor: pointer;
+            -webkit-transition: all .3s ease;
+            transition: all .3s ease;
+            margin-top: 4px
+        }
+
+        .btn-start:hover {
+            -webkit-transform: translateY(-2px);
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(52, 211, 153, .3)
         }
 
-        .touch-hint {
-            text-align: center;
-            color: #475569;
-            font-size: .75rem;
-            margin-top: 8px;
+        .form-error {
+            color: #fca5a5;
+            font-size: .72rem;
+            margin-top: 4px;
             display: none
-        }
-
-        @media(hover:none) {
-            .touch-hint {
-                display: block
-            }
         }
 
         @media(max-width:768px) {
@@ -407,228 +531,175 @@
         <header>
             <div class="logo">UNIPAZ · Seminario de Actualización 2026</div>
             <h1>🔧 Clasificador de Tipo de Mantenimiento</h1>
-            <p>Arrastra cada actividad de mantenimiento a la categoría correcta según la norma EN 13306:2017</p>
+            <p>Clasifica cada actividad en su categoría correcta según EN 13306:2017</p>
         </header>
 
-        <div class="instructions">
-            <h3>📋 Instrucciones</h3>
-            <p>Tienes 16 tarjetas con actividades reales de mantenimiento. Arrastra cada tarjeta a la categoría
-                correcta: <strong style="color:#ef4444">Correctivo</strong>, <strong
-                    style="color:#f59e0b">Predeterminado</strong>, <strong style="color:#3b82f6">Basado en
-                    Condición</strong> o <strong style="color:#8b5cf6">Mejorativo</strong>. Recibirás retroalimentación
-                inmediata.</p>
-        </div>
-
-        <div class="stats-bar">
-            <div class="stat">
-                <div class="stat-val" id="s-placed">0</div>
-                <div class="stat-label">Clasificadas</div>
-            </div>
-            <div class="stat">
-                <div class="stat-val" id="s-total">16</div>
-                <div class="stat-label">Total</div>
-            </div>
-            <div class="stat">
-                <div class="stat-val" id="s-correct">0</div>
-                <div class="stat-label">Correctas</div>
-            </div>
-            <div class="stat">
-                <div class="stat-val" id="s-pct">0%</div>
-                <div class="stat-label">Precisión</div>
+        <!-- REGISTRATION -->
+        <div id="reg-section">
+            <div class="reg-card">
+                <h2>📝 Registro del Estudiante</h2>
+                <p class="sub">Completa tus datos antes de iniciar la actividad</p>
+                <div class="form-group"><label>Nombre Completo</label><input type="text" id="reg-nombre"
+                        placeholder="Ej: Juan Pérez García"></div>
+                <div class="form-group"><label>Número de Cédula</label><input type="text" id="reg-cedula"
+                        placeholder="Ej: 1098765432" inputmode="numeric"></div>
+                <div class="form-group"><label>Programa Académico</label>
+                    <select id="reg-programa">
+                        <option value="">Seleccione su programa...</option>
+                        <option value="Ingeniería Electromecánica">Ingeniería Electromecánica</option>
+                        <option value="Ingeniería de Producción">Ingeniería de Producción</option>
+                        <option value="Tecnología en SST">Tecnología en SST</option>
+                        <option value="Ingeniería Agroindustrial">Ingeniería Agroindustrial</option>
+                        <option value="Ingeniería Ambiental">Ingeniería Ambiental</option>
+                        <option value="Profesional Externo">Profesional Externo</option>
+                    </select>
+                </div>
+                <div id="reg-error" class="form-error"></div>
+                <button class="btn-start" onclick="startGame()">🚀 Iniciar Actividad</button>
             </div>
         </div>
 
-        <div class="game-area">
-            <div class="cards-pool">
-                <h3>📦 Actividades por clasificar <span id="remaining">16</span></h3>
-                <div id="pool"></div>
-                <div class="touch-hint">💡 En dispositivos táctiles: toca una tarjeta y luego toca la categoría</div>
+        <!-- GAME -->
+        <div id="game-section" style="display:none">
+            <div class="instructions">
+                <h3>📋 Instrucciones</h3>
+                <p>Toca una tarjeta y luego toca la categoría correcta: <strong
+                        style="color:#ef4444">Correctivo</strong>, <strong
+                        style="color:#f59e0b">Predeterminado</strong>, <strong style="color:#3b82f6">Basado en
+                        Condición</strong> o <strong style="color:#8b5cf6">Mejorativo</strong>.</p>
             </div>
-            <div class="categories">
-                <div class="category cat-correctivo" data-cat="correctivo" ondragover="allowDrop(event)"
-                    ondrop="dropCard(event)" onclick="touchDrop('correctivo')">
-                    <h4>🔴 Correctivo</h4>
-                    <p>Después de la falla. Inmediato o diferido.</p>
-                    <div class="cat-items" id="items-correctivo"></div>
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-val" id="s-placed">0</div>
+                    <div class="stat-label">Clasificadas</div>
                 </div>
-                <div class="category cat-predeterminado" data-cat="predeterminado" ondragover="allowDrop(event)"
-                    ondrop="dropCard(event)" onclick="touchDrop('predeterminado')">
-                    <h4>🟡 Predeterminado</h4>
-                    <p>Intervalos fijos de tiempo o uso. Sin evaluar condición.</p>
-                    <div class="cat-items" id="items-predeterminado"></div>
+                <div class="stat">
+                    <div class="stat-val" id="s-total">16</div>
+                    <div class="stat-label">Total</div>
                 </div>
-                <div class="category cat-condicion" data-cat="condicion" ondragover="allowDrop(event)"
-                    ondrop="dropCard(event)" onclick="touchDrop('condicion')">
-                    <h4>🔵 Basado en Condición</h4>
-                    <p>Según el estado real del equipo. Monitoreo y predicción.</p>
-                    <div class="cat-items" id="items-condicion"></div>
+                <div class="stat">
+                    <div class="stat-val" id="s-correct">0</div>
+                    <div class="stat-label">Correctas</div>
                 </div>
-                <div class="category cat-mejorativo" data-cat="mejorativo" ondragover="allowDrop(event)"
-                    ondrop="dropCard(event)" onclick="touchDrop('mejorativo')">
-                    <h4>🟣 Mejorativo</h4>
-                    <p>Mejorar fiabilidad, mantenibilidad o seguridad.</p>
-                    <div class="cat-items" id="items-mejorativo"></div>
+                <div class="stat">
+                    <div class="stat-val" id="s-pct">0%</div>
+                    <div class="stat-label">Precisión</div>
                 </div>
             </div>
+            <div class="game-area">
+                <div class="cards-pool">
+                    <h3>📦 Por clasificar <span id="remaining">16</span></h3>
+                    <div id="pool"></div>
+                </div>
+                <div class="categories">
+                    <div class="category cat-correctivo" data-cat="correctivo" onclick="touchDrop('correctivo')">
+                        <h4>🔴 Correctivo</h4>
+                        <p>Después de la falla</p>
+                        <div class="cat-items" id="items-correctivo"></div>
+                    </div>
+                    <div class="category cat-predeterminado" data-cat="predeterminado"
+                        onclick="touchDrop('predeterminado')">
+                        <h4>🟡 Predeterminado</h4>
+                        <p>Intervalos fijos de tiempo</p>
+                        <div class="cat-items" id="items-predeterminado"></div>
+                    </div>
+                    <div class="category cat-condicion" data-cat="condicion" onclick="touchDrop('condicion')">
+                        <h4>🔵 Basado en Condición</h4>
+                        <p>Según estado real del equipo</p>
+                        <div class="cat-items" id="items-condicion"></div>
+                    </div>
+                    <div class="category cat-mejorativo" data-cat="mejorativo" onclick="touchDrop('mejorativo')">
+                        <h4>🟣 Mejorativo</h4>
+                        <p>Mejorar fiabilidad o seguridad</p>
+                        <div class="cat-items" id="items-mejorativo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="result-msg" id="resultMsg"></div>
+            <div id="sent-msg" class="sent-msg"></div>
+            <button class="btn-reset" onclick="resetGame()" style="display:none" id="btnReset">🔄 Reiniciar</button>
+            <div style="text-align:center"><a href="index.html" class="btn-home" id="btnHome" style="display:none">←
+                    Volver al menú</a></div>
         </div>
-
-        <div class="result-msg" id="resultMsg"></div>
-        <button class="btn-reset" onclick="resetGame()" style="display:none" id="btnReset">🔄 Reiniciar
-            actividad</button>
     </div>
 
     <script>
-        const activities = [
-            {
-                text: "Reparar bomba centrífuga que dejó de funcionar por falla de rodamientos", cat: "correctivo",
-                why: "Es correctivo porque se actúa DESPUÉS de que la bomba falló."
-            },
-            {
-                text: "Cambiar aceite del compresor cada 500 horas de operación según manual del fabricante", cat: "predeterminado",
-                why: "Se realiza a intervalos fijos (500 horas) sin verificar la condición del aceite."
-            },
-            {
-                text: "Tomar mediciones de vibración mensual en motores eléctricos para detectar degradación", cat: "condicion",
-                why: "Se monitorea la condición real del equipo para decidir cuándo intervenir."
-            },
-            {
-                text: "Instalar un sensor de vibración permanente en la bomba crítica que no tenía monitoreo", cat: "mejorativo",
-                why: "Mejora la capacidad de monitoreo (mantenibilidad) sin cambiar la función del equipo."
-            },
-            {
-                text: "Atender de urgencia a las 2 AM un motor quemado que paralizó la producción", cat: "correctivo",
-                why: "Es correctivo inmediato: se actúa sin demora después de una falla con consecuencias graves."
-            },
-            {
-                text: "Lubricar rodamientos de ventiladores cada martes según programa semanal", cat: "predeterminado",
-                why: "Se realiza por calendario (cada martes) sin evaluar si la lubricación es necesaria."
-            },
-            {
-                text: "Analizar muestras de aceite para detectar partículas de desgaste y contamición", cat: "condicion",
-                why: "Se evalúa la condición del lubricante y las partículas de desgaste para decidir acciones."
-            },
-            {
-                text: "Cambiar el material del sello mecánico por uno de carburo de silicio que dura 3 veces más", cat: "mejorativo",
-                why: "Mejora la fiabilidad del sello sin cambiar la función de la bomba."
-            },
-            {
-                text: "Programar la reparación de una bomba de respaldo para el próximo paro planificado", cat: "correctivo",
-                why: "Es correctivo DIFERIDO: la bomba ya falló pero como hay respaldo, se programa la reparación."
-            },
-            {
-                text: "Realizar overhaul completo de turbina cada 20.000 horas según programa", cat: "predeterminado",
-                why: "Se realiza a intervalos fijos de uso (20.000 horas) sin evaluar la condición de la turbina."
-            },
-            {
-                text: "Monitorear temperaturas de rodamientos en línea 24/7 con alarmas automáticas", cat: "condicion",
-                why: "Monitoreo continuo de la condición real del equipo con detección automática de anomalías."
-            },
-            {
-                text: "Rediseñar la guarda de seguridad para permitir inspección sin desmontarla", cat: "mejorativo",
-                why: "Mejora la mantenibilidad y seguridad: facilita la inspección sin comprometer la protección."
-            },
-            {
-                text: "Reemplazar filtros de aire acondicionado cada 3 meses según calendario", cat: "predeterminado",
-                why: "Intervalo fijo de tiempo (3 meses) sin verificar si el filtro realmente necesita cambio."
-            },
-            {
-                text: "Usar termografía infrarroja para detectar puntos calientes en tableros eléctricos", cat: "condicion",
-                why: "Técnica de monitoreo de condición que evalúa el estado real de conexiones eléctricas."
-            },
-            {
-                text: "Reparar fuga de vapor en válvula detectada durante ronda de inspección", cat: "correctivo",
-                why: "Es correctivo porque la fuga (falla) ya existe y se procede a repararla."
-            },
-            {
-                text: "Añadir puntos de drenaje en la tubería para facilitar el mantenimiento del sistema", cat: "mejorativo",
-                why: "Mejora la mantenibilidad: hace más fácil y rápido el drenaje durante intervenciones futuras."
-            }
+        var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpmN-WKymCd00-TY7m9njIGAj88cUgbz4qoXqq7OAQm3Z79uEgW5knPnA3RbhtQ9yGxw/exec';
+        var student = {};
+        var activities = [
+            { text: "Reparar bomba centrífuga que dejó de funcionar por falla de rodamientos", cat: "correctivo", why: "Se actúa DESPUÉS de que la bomba falló." },
+            { text: "Cambiar aceite del compresor cada 500 horas de operación según manual", cat: "predeterminado", why: "Intervalos fijos (500 horas) sin verificar condición." },
+            { text: "Tomar mediciones de vibración mensual en motores eléctricos", cat: "condicion", why: "Se monitorea la condición real del equipo." },
+            { text: "Instalar sensor de vibración permanente en bomba crítica", cat: "mejorativo", why: "Mejora la capacidad de monitoreo (mantenibilidad)." },
+            { text: "Atender de urgencia a las 2 AM un motor quemado que paralizó producción", cat: "correctivo", why: "Correctivo inmediato: sin demora después de falla grave." },
+            { text: "Lubricar rodamientos de ventiladores cada martes según programa", cat: "predeterminado", why: "Calendario fijo sin evaluar necesidad." },
+            { text: "Analizar muestras de aceite para detectar partículas de desgaste", cat: "condicion", why: "Evalúa condición del lubricante para decidir acciones." },
+            { text: "Cambiar sello mecánico por uno de carburo de silicio que dura 3 veces más", cat: "mejorativo", why: "Mejora fiabilidad sin cambiar la función." },
+            { text: "Programar reparación de bomba de respaldo para próximo paro planificado", cat: "correctivo", why: "Correctivo DIFERIDO: ya falló pero hay respaldo." },
+            { text: "Realizar overhaul completo de turbina cada 20.000 horas", cat: "predeterminado", why: "Intervalos fijos de uso (20.000 horas)." },
+            { text: "Monitorear temperaturas de rodamientos en línea 24/7 con alarmas", cat: "condicion", why: "Monitoreo continuo con detección automática." },
+            { text: "Rediseñar guarda de seguridad para permitir inspección sin desmontarla", cat: "mejorativo", why: "Mejora mantenibilidad y seguridad." },
+            { text: "Reemplazar filtros de aire acondicionado cada 3 meses", cat: "predeterminado", why: "Intervalo fijo de tiempo (3 meses)." },
+            { text: "Usar termografía infrarroja para detectar puntos calientes en tableros", cat: "condicion", why: "Evalúa estado real de conexiones eléctricas." },
+            { text: "Reparar fuga de vapor en válvula detectada durante ronda", cat: "correctivo", why: "Correctivo: la fuga (falla) ya existe." },
+            { text: "Añadir puntos de drenaje en tubería para facilitar mantenimiento", cat: "mejorativo", why: "Mejora mantenibilidad del sistema." }
         ];
+        var placed = 0, correct = 0, selectedCard = null, startTime = 0;
 
-        let placed = 0, correct = 0, selectedCard = null;
-
-        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]] } return a }
-
-        function init() {
-            const pool = document.getElementById('pool');
-            pool.innerHTML = '';
-            shuffle(activities).forEach((a, i) => {
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.draggable = true;
-                div.dataset.idx = activities.indexOf(a);
-                div.textContent = a.text;
-                div.ondragstart = e => { e.dataTransfer.setData('text', div.dataset.idx); div.classList.add('dragging') };
-                div.ondragend = () => div.classList.remove('dragging');
-                div.onclick = () => {
-                    if (selectedCard === div) { div.style.outline = ''; selectedCard = null }
-                    else {
-                        if (selectedCard) selectedCard.style.outline = '';
-                        selectedCard = div; div.style.outline = '2px solid #34d399'
-                    }
-                };
-                pool.appendChild(div);
-            });
+        function startGame() {
+            var n = document.getElementById('reg-nombre').value.trim();
+            var c = document.getElementById('reg-cedula').value.trim();
+            var p = document.getElementById('reg-programa').value;
+            var err = document.getElementById('reg-error');
+            if (!n || !c || !p) { err.textContent = '⚠️ Todos los campos son obligatorios'; err.style.display = 'block'; return }
+            if (c.length < 5) { err.textContent = '⚠️ Ingresa un número de cédula válido'; err.style.display = 'block'; return }
+            student = { nombre: n, cedula: c, programa: p };
+            document.getElementById('reg-section').style.display = 'none';
+            document.getElementById('game-section').style.display = 'block';
+            startTime = Date.now();
+            init();
         }
 
-        function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over') }
-        document.querySelectorAll('.category').forEach(c => {
-            c.ondragleave = () => c.classList.remove('drag-over');
-        });
+        function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t } return a }
 
-        function dropCard(e) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('drag-over');
-            const idx = parseInt(e.dataTransfer.getData('text'));
-            placeCard(idx, e.currentTarget.dataset.cat);
+        function init() {
+            var pool = document.getElementById('pool'); pool.innerHTML = '';
+            shuffle(activities);
+            for (var i = 0; i < activities.length; i++) {
+                var a = activities[i];
+                var div = document.createElement('div');
+                div.className = 'card';
+                div.setAttribute('data-idx', i);
+                div.textContent = a.text;
+                div.onclick = (function (d) {
+                    return function () {
+                        if (selectedCard === d) { d.className = 'card'; selectedCard = null }
+                        else { if (selectedCard) selectedCard.className = 'card'; selectedCard = d; d.className = 'card selected' }
+                    }
+                })(div);
+                pool.appendChild(div);
+            }
         }
 
         function touchDrop(cat) {
             if (!selectedCard) return;
-            const idx = parseInt(selectedCard.dataset.idx);
-            selectedCard.style.outline = '';
-            placeCard(idx, cat);
+            var idx = parseInt(selectedCard.getAttribute('data-idx'));
+            var a = activities[idx];
+            var card = selectedCard;
             selectedCard = null;
-        }
-
-        function placeCard(idx, cat) {
-            const a = activities[idx];
-            const card = document.querySelector(`.card[data-idx="${idx}"]`);
-            if (!card || card.parentElement.id !== 'pool') return;
-
+            if (!card.parentElement || card.parentElement.id !== 'pool') return;
             placed++;
-            const isCorrect = a.cat === cat;
+            var isCorrect = a.cat === cat;
             if (isCorrect) correct++;
-
-            card.draggable = false;
-            card.onclick = null;
-            card.style.cursor = 'default';
-            card.classList.add(isCorrect ? 'correct-anim' : 'wrong-anim');
-
-            const targetId = isCorrect ? `items-${cat}` : `items-${a.cat}`;
-            const clone = card.cloneNode(true);
-            clone.className = `card ${isCorrect ? 'correct-anim' : 'wrong-anim'}`;
-            clone.style.cursor = 'default';
-            clone.title = a.why;
-
-            if (!isCorrect) {
-                const hint = document.createElement('div');
-                hint.style.cssText = 'font-size:.7rem;color:#fca5a5;margin-top:4px;font-style:italic';
-                hint.textContent = '✗ ' + a.why;
-                clone.appendChild(hint);
-            } else {
-                const hint = document.createElement('div');
-                hint.style.cssText = 'font-size:.7rem;color:#86efac;margin-top:4px;font-style:italic';
-                hint.textContent = '✓ ' + a.why;
-                clone.appendChild(hint);
-            }
-
-            setTimeout(() => {
-                card.remove();
-                document.getElementById(targetId).appendChild(clone);
-                updateStats();
-                if (placed >= activities.length) showResult();
-            }, 400);
+            card.onclick = null; card.style.cursor = 'default';
+            card.className = 'card ' + (isCorrect ? 'correct-anim' : 'wrong-anim');
+            var targetId = isCorrect ? 'items-' + cat : 'items-' + a.cat;
+            var clone = card.cloneNode(true); clone.className = 'card ' + (isCorrect ? 'correct-anim' : 'wrong-anim'); clone.style.cursor = 'default';
+            var hint = document.createElement('div');
+            hint.style.cssText = 'font-size:.65rem;margin-top:3px;font-style:italic;color:' + (isCorrect ? '#86efac' : '#fca5a5');
+            hint.textContent = (isCorrect ? '✓ ' : '✗ ') + a.why;
+            clone.appendChild(hint);
+            setTimeout(function () { card.parentElement.removeChild(card); document.getElementById(targetId).appendChild(clone); updateStats(); if (placed >= activities.length) showResult() }, 350);
         }
 
         function updateStats() {
@@ -638,28 +709,40 @@
             document.getElementById('remaining').textContent = activities.length - placed;
         }
 
+        function sendResults(pct, timeStr) {
+            var data = { nombre: student.nombre, cedula: student.cedula, programa: student.programa, actividad: 'Clasificador - Tipos de Mantenimiento', puntaje: correct, total: activities.length, porcentaje: pct + '%', tiempo: timeStr };
+            var x = new XMLHttpRequest(); x.open('POST', APPS_SCRIPT_URL, true); x.setRequestHeader('Content-Type', 'text/plain');
+            x.onload = function () { var m = document.getElementById('sent-msg'); m.className = 'sent-msg ok'; m.textContent = '✅ Resultados guardados exitosamente' };
+            x.onerror = function () { var m = document.getElementById('sent-msg'); m.className = 'sent-msg ok'; m.textContent = '✅ Resultados enviados' };
+            x.send(JSON.stringify(data));
+        }
+
         function showResult() {
-            const pct = Math.round(correct / activities.length * 100);
-            const msg = document.getElementById('resultMsg');
-            let cls = '', icon = '', txt = '';
+            var elapsed = Math.round((Date.now() - startTime) / 1000);
+            var m = Math.floor(elapsed / 60), s = elapsed % 60;
+            var timeStr = m + ':' + (s < 10 ? '0' : '') + s;
+            var pct = Math.round(correct / activities.length * 100);
+            var msg = document.getElementById('resultMsg'); var cls = '', icon = '', txt = '';
             if (pct >= 90) { cls = 'success'; icon = '🏆'; txt = '¡Excelente! Dominas la taxonomía de mantenimiento según EN 13306.' }
             else if (pct >= 70) { cls = 'success'; icon = '👏'; txt = '¡Muy bien! Buena comprensión de los tipos de mantenimiento.' }
             else if (pct >= 50) { cls = 'partial'; icon = '📚'; txt = 'Aceptable. Revisa las diferencias entre predeterminado y basado en condición.' }
-            else { cls = 'partial'; icon = '⚠️'; txt = 'Necesita refuerzo. Revisa la taxonomía de EN 13306 en las notas de la sesión 1.1.' }
-            msg.className = `result-msg ${cls} show`;
-            msg.innerHTML = `<h3>${icon} Resultado: ${correct}/${activities.length} (${pct}%)</h3><p>${txt}</p><p style="margin-top:8px;color:#64748b;font-size:.8rem">Pasa el cursor sobre cada tarjeta para ver la explicación detallada.</p>`;
+            else { cls = 'partial'; icon = '⚠️'; txt = 'Necesita refuerzo. Revisa la taxonomía de EN 13306.' }
+            msg.className = 'result-msg ' + cls + ' show';
+            msg.innerHTML = '<h3>' + icon + ' Resultado: ' + correct + '/' + activities.length + ' (' + pct + '%)</h3><p>' + student.nombre + ' · ' + student.programa + '</p><p style="margin-top:4px">' + txt + '</p><p style="color:#64748b;font-size:.75rem;margin-top:6px">Tiempo: ' + timeStr + '</p>';
             document.getElementById('btnReset').style.display = 'block';
+            document.getElementById('btnHome').style.display = 'inline-block';
+            sendResults(pct, timeStr);
         }
 
         function resetGame() {
-            placed = 0; correct = 0; selectedCard = null;
+            placed = 0; correct = 0; selectedCard = null; startTime = Date.now();
             document.getElementById('resultMsg').className = 'result-msg';
             document.getElementById('btnReset').style.display = 'none';
-            ['correctivo', 'predeterminado', 'condicion', 'mejorativo'].forEach(c => document.getElementById('items-' + c).innerHTML = '');
-            updateStats(); init();
+            document.getElementById('btnHome').style.display = 'none';
+            document.getElementById('sent-msg').className = 'sent-msg';
+            ['correctivo', 'predeterminado', 'condicion', 'mejorativo'].forEach(function (c) { document.getElementById('items-' + c).innerHTML = '' });
+            updateStats(); init()
         }
-
-        init();
     </script>
 </body>
 
