@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad Práctica: Fundamentos de Confiabilidad</title>
+<style>
+  :root {
+    --navy: #0f172a;
+    --navy2: #1e293b;
+    --teal: #0e7490;
+    --teal2: #06b6d4;
+    --orange: #f97316;
+    --orange2: #fb923c;
+    --green: #22c55e;
+    --green2: #4ade80;
+    --red: #ef4444;
+    --red2: #f87171;
+    --purple: #8b5cf6;
+    --light: #f8fafc;
+    --gray: #94a3b8;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  body {
+    background: var(--navy);
+    color: var(--light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  header {
+    background: rgba(15,23,42,0.95);
+    border-bottom: 2px solid var(--teal);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+  }
+  .logo { font-weight: 800; color: var(--teal2); font-size: 1.2rem; letter-spacing: 1px;}
+  .progress-wrap { display: flex; align-items: center; gap: 1rem; }
+  .progress-bar { width: 150px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal2); width: 0%; transition: width 0.3s ease; }
+  .score { font-weight: bold; color: var(--orange2); font-size: 1.1rem; }
+
+  /* Main Container */
+  main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+
+  .screen {
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+  }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  h1 { font-size: 2.2rem; margin-bottom: 1rem; background: linear-gradient(to right, #fff, var(--teal2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  h2 { font-size: 1.6rem; margin-bottom: 1.5rem; color: var(--white); border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;}
+  p { color: #cbd5e1; margin-bottom: 1.5rem; line-height: 1.6; font-size: 1.1rem; }
+
+  /* Buttons */
+  .btn {
+    background: var(--teal); color: white; border: none; padding: 0.8rem 1.8rem;
+    border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn:hover { background: var(--teal2); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(6,182,212,0.4); }
+  .btn:disabled { background: var(--gray); cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-outline { background: transparent; border: 2px solid var(--teal2); color: var(--teal2); }
+  .btn-outline:hover { background: rgba(6,182,212,0.1); }
+
+  /* Challenger Grid */
+  .grid { display: grid; gap: 1.5rem; margin-bottom: 2rem; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+  /* Cards (Options) */
+  .option-card {
+    background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.2s;
+    text-align: center;
+  }
+  .option-card:hover { border-color: var(--teal2); background: rgba(6,182,212,0.05); }
+  .option-card.selected { border-color: var(--teal2); background: rgba(6,182,212,0.15); box-shadow: 0 0 15px rgba(6,182,212,0.3); }
+  .option-card.correct { border-color: var(--green); background: rgba(34,197,94,0.15); }
+  .option-card.incorrect { border-color: var(--red); background: rgba(239,68,68,0.15); }
+  
+  .option-card h3 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .option-card p { font-size: 0.95rem; margin-bottom: 0; color: var(--gray); }
+
+  /* Feedback box */
+  .feedback {
+    padding: 1.2rem; border-radius: 8px; margin-bottom: 1.5rem; font-weight: 500; display: none;
+    animation: popIn 0.3s ease;
+  }
+  @keyframes popIn { 0% { opacity:0; transform:scale(0.95); } 100% { opacity:1; transform:scale(1); } }
+  .feedback.success { display: block; background: rgba(34,197,94,0.15); border: 1px solid var(--green); color: #bbf7d0; }
+  .feedback.error { display: block; background: rgba(239,68,68,0.15); border: 1px solid var(--red); color: #fecaca; }
+
+  /* Drag and Drop Zone */
+  .dnd-container { display: flex; gap: 2rem; margin-bottom: 2rem; }
+  .items-bank { flex: 1; display: flex; flex-direction: column; gap: 1rem; min-height: 200px; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 8px;}
+  .drop-zones { flex: 2; display: flex; flex-direction: column; gap: 1rem; }
+  .drag-item {
+    background: var(--navy2); border: 1px solid var(--gray); padding: 1rem; border-radius: 6px;
+    cursor: grab; font-weight: 600; text-align: center; color: var(--white);
+  }
+  .drag-item:active { cursor: grabbing; opacity: 0.8; }
+  .drag-item.teal { border-left: 4px solid var(--teal2); }
+  .drag-item.orange { border-left: 4px solid var(--orange2); }
+  .drag-item.purple { border-left: 4px solid var(--purple); }
+  
+  .drop-zone {
+    background: rgba(255,255,255,0.02); border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 8px; padding: 1rem; min-height: 80px; display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.5rem; transition: background 0.2s; position: relative;
+  }
+  .drop-zone.drag-over { background: rgba(255,255,255,0.08); border-color: var(--teal2); }
+  .drop-zone-title { font-size: 0.85rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; width: 100%; text-align: left;}
+  .drop-zone.filled { border-style: solid; }
+
+  /* OEE Interactive */
+  .oee-calculator { background: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; }
+  .slider-group { margin-bottom: 1.5rem; }
+  .slider-group label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 600; }
+  .slider-val { color: var(--teal2); }
+  input[type=range] { width: 100%; -webkit-appearance: none; background: transparent; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: var(--teal2); cursor: pointer; margin-top: -6px; }
+  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: rgba(255,255,255,0.1); border-radius: 3px; }
+  .oee-result { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(14,116,144,0.2); border: 1px solid var(--teal); border-radius: 8px; margin-top: 1rem;}
+  .oee-big { font-size: 2.5rem; font-weight: 900; color: #fff; }
+
+  /* Match CSS */
+  .match-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; border: 1px solid transparent; }
+  .match-row.correct { border-color: var(--green); background: rgba(34,197,94,0.1); }
+  .match-row.incorrect { border-color: var(--red); background: rgba(239,68,68,0.1); }
+  .match-select { background: var(--navy2); color: white; border: 1px solid var(--gray); padding: 0.5rem; border-radius: 4px; outline: none; font-size: 1rem; width: 200px;}
+
+  @media (max-width: 768px) {
+    .dnd-container { flex-direction: column; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">SIMULADOR · SESIÓN 1.2</div>
+  <div class="progress-wrap">
+    <div style="font-size:0.9rem; color:var(--gray);" id="progress-text">Reto 0 / 4</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="score">Puntos: <span id="score-val">0</span></div>
+  </div>
+</header>
+
+<main>
+  <!-- INTRO SCREEN -->
+  <div class="screen active" id="screen-intro">
+    <h1>Misión: Experto en Confiabilidad</h1>
+    <p>Bienvenido al simulador interactivo de la Sesión 1.2. Para demostrar tu dominio sobre RAM, Curva de la Bañera, Distribución Weibull y OEE, deberás superar 4 retos técnicos.</p>
+    <div class="grid grid-2" style="margin-bottom: 2.5rem;">
+      <div style="background:rgba(6,182,212,0.1); padding:1rem; border-radius:8px; border-left:4px solid var(--teal2);">
+        <h4 style="color:var(--teal2); margin-bottom:0.5rem;">Lo que evaluarás:</h4>
+        <ul style="padding-left:1.2rem; color:var(--gray); font-size:0.95rem;">
+          <li>Mantenimiento vs Parámetro β</li>
+          <li>Cálculo de Disponibilidad</li>
+          <li>Mejora del OEE</li>
+          <li>Redundancia de Sistemas</li>
+        </ul>
+      </div>
+      <div style="background:rgba(249,115,22,0.1); padding:1rem; border-radius:8px; border-left:4px solid var(--orange2);">
+        <h4 style="color:var(--orange2); margin-bottom:0.5rem;">Instrucciones:</h4>
+        <p style="font-size:0.95rem; color:var(--gray); margin-bottom:0;">Gana puntos por cada respuesta correcta en el primer intento. Lee cuidadosamente los escenarios; aplican las reglas del trípode RAM.</p>
+      </div>
+    </div>
+    <button class="btn" onclick="startQuest()">Iniciar Simulación 🚀</button>
+  </div>
+
+  <!-- RETO 1: WEIBULL Y LA BAÑERA -->
+  <div class="screen" id="screen-reto1">
+    <h2>Reto 1: El Código Weibull (Curva Bañera)</h2>
+    <p>El parámetro Beta (β) de Weibull define la fase de vida de un activo y la estrategia de mantenimiento. Asigna cada valor de β a la estrategia correcta.</p>
+    
+    <div class="match-container" style="margin-bottom: 2rem;">
+      <div class="match-row" id="r1-1">
+        <div>
+          <strong style="color:var(--red2); font-size:1.2rem;">β < 1</strong>
+          <div style="font-size:0.85rem; color:var(--gray);">Mortalidad Infantil (Tasa decreciente)</div>
+        </div>
+        <select class="match-select" id="sel-1">
+          <option value="">-- Seleccionar Estrategia --</option>
+          <option value="predictivo">Monitoreo Predictivo</option>
+          <option value="proactivo">Proactivo (Causa Raíz / Instalación)</option>
+          <option value="preventivo">Preventivo Programado</option>
+        </select>
+      </div>
+      <div class="match-row" id="r1-2">
+        <div>
+          <strong style="color:var(--teal2); font-size:1.2rem;">β = 1</strong>
+          <div style="font-size:0.85rem; color:var(--gray);">Falla Aleatoria (Tasa constante)</div>
+        </div>
+        <select class="match-select" id="sel-2">
+          <option value="">-- Seleccionar Estrategia --</option>
+          <option value="predictivo">Monitoreo Predictivo</option>
+          <option value="proactivo">Proactivo (Causa Raíz / Instalación)</option>
+          <option value="preventivo">Preventivo Programado</option>
+        </select>
+      </div>
+      <div class="match-row" id="r1-3">
+        <div>
+          <strong style="color:var(--orange2); font-size:1.2rem;">β > 1</strong>
+          <div style="font-size:0.85rem; color:var(--gray);">Fase de Desgaste (Tasa creciente)</div>
+        </div>
+        <select class="match-select" id="sel-3">
+          <option value="">-- Seleccionar Estrategia --</option>
+          <option value="predictivo">Monitoreo Predictivo</option>
+          <option value="proactivo">Proactivo (Causa Raíz / Instalación)</option>
+          <option value="preventivo">Preventivo Programado</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="fb-1" class="feedback"></div>
+    <button class="btn" id="btn-chk-1" onclick="checkReto1()">Comprobar</button>
+    <button class="btn btn-outline" id="btn-nxt-1" onclick="nextScreen(2)" style="display:none;">Siguiente Reto →</button>
+  </div>
+
+  <!-- RETO 2: DISPONIBILIDAD (MTBF/MTTR) -->
+  <div class="screen" id="screen-reto2">
+    <h2>Reto 2: El Diagnóstico Táctico</h2>
+    <p>Tienes una flota de camiones mineros. Los datos anuales (8.760 h) muestran problemas. Analiza los KPI y selecciona la afirmación verdadera.</p>
+    
+    <div style="display:flex; gap:1rem; margin-bottom:1.5rem; text-align:center;">
+      <div style="flex:1; background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px;">
+        <div style="font-size:1.8rem; font-weight:bold; color:var(--teal2);">1.500 h</div>
+        <div style="font-size:0.8rem; color:var(--gray); text-transform:uppercase;">MTBF</div>
+      </div>
+      <div style="flex:1; background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px;">
+        <div style="font-size:1.8rem; font-weight:bold; color:var(--red2);">150 h</div>
+        <div style="font-size:0.8rem; color:var(--gray); text-transform:uppercase;">MTTR</div>
+      </div>
+      <div style="flex:1; background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px;">
+        <div style="font-size:1.8rem; font-weight:bold; color:var(--orange2);">90.9%</div>
+        <div style="font-size:0.8rem; color:var(--gray); text-transform:uppercase;">Disponibilidad (Ai)</div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" id="opts-2">
+      <div class="option-card" onclick="selectOption(2, this, false)">
+        <h3 style="font-size:1.2rem; color:var(--white);">Opción A</h3>
+        <p>El equipo es altamente confiable pero se repara muy rápido. Debemos enfocarnos en aumentar el preventivo.</p>
+      </div>
+      <div class="option-card" onclick="selectOption(2, this, true)">
+        <h3 style="font-size:1.2rem; color:var(--white);">Opción B</h3>
+        <p>El MTTR (150h) es extremadamente alto. El problema principal es la mantenibilidad (logística, repuestos o capacitación), no la frecuencia de fallas.</p>
+      </div>
+      <div class="option-card" onclick="selectOption(2, this, false)">
+        <h3 style="font-size:1.2rem; color:var(--white);">Opción C</h3>
+        <p>Dado que es un equipo reparable, el indicador correcto a mirar debería ser el MTTF en lugar del MTBF.</p>
+      </div>
+      <div class="option-card" onclick="selectOption(2, this, false)">
+        <h3 style="font-size:1.2rem; color:var(--white);">Opción D</h3>
+        <p>Una Disponibilidad del 90.9% ya es Clase Mundial, no se requiere ninguna acción correctiva.</p>
+      </div>
+    </div>
+
+    <div id="fb-2" class="feedback"></div>
+    <button class="btn" id="btn-chk-2" onclick="checkReto2()" disabled>Comprobar</button>
+    <button class="btn btn-outline" id="btn-nxt-2" onclick="nextScreen(3)" style="display:none;">Siguiente Reto →</button>
+  </div>
+
+  <!-- RETO 3: OEE SIMULATOR -->
+  <div class="screen" id="screen-reto3">
+    <h2>Reto 3: Optimizando el OEE</h2>
+    <p>Una línea empacadora tiene un OEE actual del <strong>69.7%</strong> (Por debajo de la meta del 85%). Usa los controles para ver qué factor debes mejorar para alcanzar la meta de Clase Mundial (>85%).</p>
+
+    <div class="oee-calculator">
+      <div class="slider-group">
+        <label>Disponibilidad <span class="slider-val" id="val-disp">85%</span></label>
+        <input type="range" id="sl-disp" min="50" max="100" value="85" oninput="calcOEE()">
+        <small style="color:var(--gray); font-size:0.75rem;">Afectada por: Fallas de equipo, Setups (Cambios de molde).</small>
+      </div>
+      <div class="slider-group">
+        <label>Rendimiento <span class="slider-val" id="val-rend">82%</span></label>
+        <input type="range" id="sl-rend" min="50" max="100" value="82" oninput="calcOEE()">
+        <small style="color:var(--gray); font-size:0.75rem;">Afectada por: Micro-paradas, Reducción de velocidad.</small>
+      </div>
+      <div class="slider-group">
+        <label>Calidad <span class="slider-val" id="val-cal">100%</span></label>
+        <input type="range" id="sl-cal" min="50" max="100" value="100" disabled oninput="calcOEE()">
+        <small style="color:var(--gray); font-size:0.75rem;">Afectada por: Defectos. (Calidad ya está al 100%, no se puede subir más).</small>
+      </div>
+      <div class="oee-result">
+        <div>
+          <div style="color:var(--gray); text-transform:uppercase; font-size:0.9rem; font-weight:bold;">OEE Resultante</div>
+          <div style="font-size:0.85rem; color:var(--teal2);">Meta ≥ 85%</div>
+        </div>
+        <div class="oee-big" id="oee-total">69.7%</div>
+      </div>
+    </div>
+    
+    <p>Pregunta: Si la Calidad está fija al 100%, y logras subir la Disponibilidad a <span>90%</span>, ¿A qué valor mínimo aproximado debes elevar el <strong>Rendimiento</strong> para lograr un OEE de 85%?</p>
+    
+    <div class="grid grid-3" id="opts-3">
+      <div class="option-card" onclick="selectOption(3, this, false)"><h3>90%</h3></div>
+      <div class="option-card" onclick="selectOption(3, this, true)"><h3>95%</h3></div>
+      <div class="option-card" onclick="selectOption(3, this, false)"><h3>99%</h3></div>
+    </div>
+
+    <div id="fb-3" class="feedback"></div>
+    <button class="btn" id="btn-chk-3" onclick="checkReto3()" disabled>Comprobar</button>
+    <button class="btn btn-outline" id="btn-nxt-3" onclick="nextScreen(4)" style="display:none;">Siguiente Reto →</button>
+  </div>
+
+  <!-- RETO 4: REDUNDANCIA -->
+  <div class="screen" id="screen-reto4">
+    <h2>Reto 4: Arquitectura de Confiabilidad</h2>
+    <p>Necesitas diseñar un sistema de bombeo para una facilidad petrolera crítica. La confiabilidad individual de cada bomba (R) es de solo <strong>80% (0.80)</strong>. La meta del sistema es tener una R ≥ 95%.</p>
+    
+    <div style="background:rgba(255,255,255,0.05); padding:1.5rem; border-radius:8px; margin-bottom:1.5rem;">
+      <h4 style="margin-bottom:1rem;">Opciones de Diseño:</h4>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <div style="flex:1; background:rgba(0,0,0,0.3); border-left:3px solid var(--red); padding:1rem;">
+          <strong>Opción 1:</strong> 2 bombas en SERIE<br>
+          <span style="color:var(--gray); font-size:0.85rem;">R_sis = 0.80 × 0.80 = 64%</span>
+        </div>
+        <div style="flex:1; background:rgba(0,0,0,0.3); border-left:3px solid var(--green); padding:1rem;">
+          <strong>Opción 2:</strong> 2 bombas en PARALELO<br>
+          <span style="color:var(--gray); font-size:0.85rem;">R_sis = 1 - (1-0.80)×(1-0.80) = 96%</span>
+        </div>
+      </div>
+      <p style="font-size:0.95rem;">¿Qué concepto explica por qué la configuración en paralelo alcanza la meta?</p>
+    </div>
+
+    <div class="grid grid-2" id="opts-4">
+      <div class="option-card" onclick="selectOption(4, this, false)">
+        <h3 style="font-size:1.1rem; color:var(--white);">MTBF Acumulado</h3>
+        <p>Al ponerlas en paralelo, los tiempos T_op se suman, doblando el MTBF.</p>
+      </div>
+      <div class="option-card" onclick="selectOption(4, this, true)">
+        <h3 style="font-size:1.1rem; color:var(--white);">Redundancia Activa</h3>
+        <p>El sistema sobrevive si al menos AL MÍNIMO UNO de sus componentes funciona. Las probabilidades de fallo (0.20) se multiplican (0.04).</p>
+      </div>
+      <div class="option-card" onclick="selectOption(4, this, false)">
+        <h3 style="font-size:1.1rem; color:var(--white);">Tasa de Falla Constante</h3>
+        <p>La curva de la bañera se aplana (β=1) automáticamente al usar dos equipos conectados a la vez.</p>
+      </div>
+      <div class="option-card" onclick="selectOption(4, this, false)">
+        <h3 style="font-size:1.1rem; color:var(--white);">Ley de Nolan & Heap</h3>
+        <p>Basado en que el 89% de las fallas son aleatorias, la serie no aplica en equipos rotativos.</p>
+      </div>
+    </div>
+
+    <div id="fb-4" class="feedback"></div>
+    <button class="btn" id="btn-chk-4" onclick="checkReto4()" disabled>Comprobar Final</button>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="screen" id="screen-results" style="text-align:center;">
+    <h1 style="font-size:3rem; margin-bottom:0.5rem;">Simulación Completada</h1>
+    <h2 id="final-msg" style="border:none; color:var(--teal2);"></h2>
+    
+    <div style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:3rem; margin:2rem auto; max-width:400px;">
+      <div style="font-size:1.2rem; color:var(--gray); text-transform:uppercase; letter-spacing:2px; margin-bottom:1rem;">Puntaje Final</div>
+      <div style="font-size:5rem; font-weight:900; color:var(--orange); line-height:1;" id="final-score">0</div>
+      <div style="font-size:1.2rem; color:var(--gray); margin-top:1rem;">de 40 posibles</div>
+    </div>
+
+    <p style="max-width:600px; margin:0 auto 2rem; color:var(--gray);">Has consolidado los fundamentos del Trípode RAM (Confiabilidad, Disponibilidad, Mantenibilidad), el patrón de fallas Weibull y la medición táctica con OEE.</p>
+
+    <button class="btn" onclick="location.reload()">Reiniciar Simulación 🔄</button>
+  </div>
+
+</main>
+
+<script>
+  let score = 0;
+  let attempts = { 1: 0, 2: 0, 3: 0, 4: 0 };
+  let currentSelection = { 2: null, 3: null, 4: null };
+  const maxScorePerLevel = 10;
+
+  function updateHeader(level) {
+    document.getElementById('progress-text').innerText = `Reto ${level} / 4`;
+    document.getElementById('progress-fill').style.width = `${(level/4)*100}%`;
+    document.getElementById('score-val').innerText = score;
+  }
+
+  function startQuest() {
+    document.getElementById('screen-intro').classList.remove('active');
+    document.getElementById('screen-reto1').classList.add('active');
+    updateHeader(1);
+  }
+
+  function nextScreen(num) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(`screen-reto${num}`).classList.add('active');
+    updateHeader(num);
+  }
+
+  // --- RETO 1: WEIBULL ---
+  function checkReto1() {
+    attempts[1]++;
+    const s1 = document.getElementById('sel-1').value; // <1 -> proactivo
+    const s2 = document.getElementById('sel-2').value; // =1 -> predictivo
+    const s3 = document.getElementById('sel-3').value; // >1 -> preventivo
+    const fb = document.getElementById('fb-1');
+    const bChk = document.getElementById('btn-chk-1');
+    const bNxt = document.getElementById('btn-nxt-1');
+
+    if(!s1 || !s2 || !s3) {
+      fb.className = 'feedback error'; fb.innerText = 'Por favor selecciona una estrategia para cada fase.'; return;
+    }
+
+    let correct = true;
+    if(s1 === 'proactivo') document.getElementById('r1-1').className = 'match-row correct'; else { document.getElementById('r1-1').className = 'match-row incorrect'; correct = false; }
+    if(s2 === 'predictivo') document.getElementById('r1-2').className = 'match-row correct'; else { document.getElementById('r1-2').className = 'match-row incorrect'; correct = false; }
+    if(s3 === 'preventivo') document.getElementById('r1-3').className = 'match-row correct'; else { document.getElementById('r1-3').className = 'match-row incorrect'; correct = false; }
+
+    if(correct) {
+      fb.className = 'feedback success';
+      fb.innerHTML = '¡Excelente! Regla de oro: El Mantenimiento Preventivo (por horas/calendario) <strong>solo funciona para modos de falla por desgaste (β>1)</strong>.';
+      bChk.style.display = 'none'; bNxt.style.display = 'inline-flex';
+      
+      document.getElementById('sel-1').disabled = true;
+      document.getElementById('sel-2').disabled = true;
+      document.getElementById('sel-3').disabled = true;
+
+      if(attempts[1] === 1) score += maxScorePerLevel;
+      else score += (maxScorePerLevel / 2);
+      updateHeader(1);
+    } else {
+      fb.className = 'feedback error';
+      fb.innerText = 'Revisa las asignaciones. Recuerda: β<1 es el inicio (origen/instala), β=1 es la zona plana (condición), β>1 es el final (envejecimiento).';
+    }
+  }
+
+  // --- OPCIÓN MÚLTIPLE GENÉRICA ---
+  function selectOption(level, el, isCorrect) {
+    if(attempts[level] > 0 && currentSelection[level] && document.getElementById(`btn-nxt-${level}`)?.style.display === 'inline-flex') return; // already solved
+
+    document.querySelectorAll(`#opts-${level} .option-card`).forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    currentSelection[level] = { el: el, correct: isCorrect };
+    document.getElementById(`btn-chk-${level}`).disabled = false;
+  }
+
+  function handleMCQ(level, successMsg, failMsg) {
+    attempts[level]++;
+    const sel = currentSelection[level];
+    const fb = document.getElementById(`fb-${level}`);
+    const bChk = document.getElementById(`btn-chk-${level}`);
+    const bNxt = document.getElementById(`btn-nxt-${level}`); // Level 4 doesnt have nxt
+
+    if(sel.correct) {
+      sel.el.classList.remove('selected');
+      sel.el.classList.add('correct');
+      fb.className = 'feedback success'; fb.innerHTML = successMsg;
+      bChk.style.display = 'none'; 
+      if(bNxt) bNxt.style.display = 'inline-flex';
+      else {
+        // Finish logic for level 4
+        setTimeout(showResults, 1500);
+      }
+
+      if(attempts[level] === 1) score += maxScorePerLevel;
+      else score += (maxScorePerLevel / 2);
+      updateHeader(level);
+    } else {
+      sel.el.classList.remove('selected');
+      sel.el.classList.add('incorrect');
+      fb.className = 'feedback error'; fb.innerHTML = failMsg;
+    }
+  }
+
+  function checkReto2() {
+    handleMCQ(2, 
+      "¡Correcto! Un MTTR de 150 horas (casi 6 días por reparación) castiga drásticamente la Disponibilidad. Hay que revisar logística de repuestos o herramientas.",
+      "Incorrecto. Pista: Observa la relación Mantenibilidad (MTTR). ¿150 horas por falla es normal?"
+    );
+  }
+
+  function checkReto3() {
+    handleMCQ(3,
+      "¡Exacto! OEE = 0.90 (Disp) × 0.95 (Rend) × 1.0 (Cal) = 0.855 (85.5%). Necesitamos atacar las micro-paradas y subir la velocidad al 95%.",
+      "Incorrecto. Multiplica Disponibilidad (0.90) × Rendimiento (?) × Calidad (1.0). El resultado debe dar 0.85."
+    );
+  }
+
+  function checkReto4() {
+    handleMCQ(4,
+      "¡Excelente ingeniero! La redundancia activa multiplicó las probabilidades de fallo. Rs = 1 - (0.20 × 0.20) = 0.96. Esto demuestra matemáticamente por qué los sistemas críticos se diseñan en paralelo.",
+      "Incorrecto. Recuerda la fórmula de componentes en paralelo y cómo maneja las probabilidades de fallo."
+    );
+  }
+
+  // --- OEE LOGIC ---
+  function calcOEE() {
+    const d = document.getElementById('sl-disp').value;
+    const r = document.getElementById('sl-rend').value;
+    const c = 100;
+
+    document.getElementById('val-disp').innerText = d + '%';
+    document.getElementById('val-rend').innerText = r + '%';
+    
+    const oee = (d/100) * (r/100) * (c/100);
+    const oeePerc = (oee * 100).toFixed(1);
+    
+    const oeeEl = document.getElementById('oee-total');
+    oeeEl.innerText = oeePerc + '%';
+    
+    if(oeePerc >= 85) oeeEl.style.color = 'var(--green2)';
+    else oeeEl.style.color = '#fff';
+  }
+
+  // --- END ---
+  function showResults() {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-results').classList.add('active');
+    
+    document.getElementById('final-score').innerText = score;
+    const msg = document.getElementById('final-msg');
+    
+    if(score >= 40) msg.innerText = "¡Clase Mundial! Excelencia Total 🏆";
+    else if(score >= 30) msg.innerText = "¡Gran trabajo! Conocimientos sólidos 🌟";
+    else msg.innerText = "Bien hecho, pero hay áreas por reforzar 📚";
+  }
+
+</script>
+</body>
+</html>

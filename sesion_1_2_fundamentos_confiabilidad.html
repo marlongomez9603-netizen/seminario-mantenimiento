@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sesión 1.2 — Fundamentos de Ingeniería de Confiabilidad</title>
+<!-- Charts rendered as inline SVG - no external dependencies -->
+<style>
+  :root {
+    --navy: #0f172a;
+    --navy2: #1e293b;
+    --teal: #0e7490;
+    --teal2: #06b6d4;
+    --orange: #f97316;
+    --orange2: #fb923c;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --light: #f8fafc;
+    --gray: #94a3b8;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--light);
+    line-height: 1.6;
+    scroll-behavior: smooth;
+  }
+
+  /* TOP NAV */
+  #topnav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(15,23,42,0.97);
+    border-bottom: 2px solid var(--teal);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 1.5rem;
+    height: 56px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  #topnav::-webkit-scrollbar { display: none; }
+  #topnav .logo {
+    font-weight: 800; color: var(--teal2); font-size: 0.85rem;
+    white-space: nowrap; margin-right: 1.5rem; letter-spacing: 0.5px;
+  }
+  .nav-item {
+    color: var(--gray); text-decoration: none; font-size: 0.78rem;
+    padding: 0 0.85rem; height: 56px; display: flex; align-items: center;
+    white-space: nowrap; border-bottom: 2px solid transparent;
+    transition: all 0.2s; font-weight: 500;
+  }
+  .nav-item:hover, .nav-item.active {
+    color: var(--teal2); border-bottom-color: var(--teal2);
+  }
+
+  /* LAYOUT */
+  main { padding-top: 56px; max-width: 1100px; margin: 0 auto; padding-left: 1.5rem; padding-right: 1.5rem; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0f172a 0%, #0e7490 50%, #0f172a 100%);
+    text-align: center; padding: 5rem 2rem 4rem; position: relative;
+    border-bottom: 1px solid rgba(6,182,212,0.3);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2306b6d4' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero .badge {
+    display: inline-block; background: rgba(6,182,212,0.2); color: var(--teal2);
+    border: 1px solid var(--teal2); border-radius: 50px; padding: 0.35rem 1.2rem;
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800;
+    line-height: 1.2; margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--white), var(--teal2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.1rem; color: var(--gray); max-width: 650px; margin: 0 auto 2rem;
+  }
+  .hero .trio {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  }
+  .trio-badge {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px; padding: 0.6rem 1.4rem; font-weight: 700; font-size: 0.95rem;
+  }
+  .trio-badge span { color: var(--teal2); }
+
+  /* SECTION */
+  section {
+    padding: 4rem 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    scroll-margin-top: 70px;
+  }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(14,116,144,0.2); color: var(--teal2);
+    border-left: 3px solid var(--teal2);
+    padding: 0.4rem 1rem; font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1.2rem;
+  }
+  h2 {
+    font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800;
+    margin-bottom: 1rem; color: var(--white);
+  }
+  h3 { font-size: 1.15rem; font-weight: 700; color: var(--teal2); margin-bottom: 0.6rem; }
+  p { color: #cbd5e1; margin-bottom: 0.8rem; font-size: 0.97rem; }
+
+  /* CARDS */
+  .cards { display: grid; gap: 1.2rem; }
+  .cards.cols-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .cards.cols-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--teal); }
+  .card.accent-teal { border-top: 3px solid var(--teal2); }
+  .card.accent-orange { border-top: 3px solid var(--orange); }
+  .card.accent-green { border-top: 3px solid var(--green); }
+  .card.accent-red { border-top: 3px solid var(--red); }
+  .card.accent-yellow { border-top: 3px solid var(--yellow); }
+
+  /* FORMULA BOX */
+  .formula-box {
+    background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.3);
+    border-radius: 10px; padding: 1.5rem 2rem; margin: 1.5rem 0;
+    font-family: 'Courier New', monospace; font-size: 1.05rem;
+    text-align: center; color: var(--teal2);
+    letter-spacing: 0.5px;
+  }
+  .formula-box .formula-main { font-size: 1.4rem; font-weight: 700; display: block; margin-bottom: 0.5rem; }
+  .formula-box small { color: var(--gray); font-family: 'Segoe UI', sans-serif; font-size: 0.82rem; }
+
+  /* KPI BOXES */
+  .kpi-row { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+  .kpi {
+    flex: 1; min-width: 140px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; padding: 1.2rem; text-align: center;
+  }
+  .kpi .val { font-size: 2rem; font-weight: 800; color: var(--teal2); line-height: 1; }
+  .kpi .lbl { font-size: 0.75rem; color: var(--gray); margin-top: 0.3rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi .desc { font-size: 0.82rem; color: #94a3b8; margin-top: 0.3rem; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0.8rem; margin: 1rem 0; }
+  .step {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: rgba(255,255,255,0.03); border-radius: 8px; padding: 1rem;
+  }
+  .step-num {
+    background: var(--teal); color: white; border-radius: 50%;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .step-content p { margin: 0; font-size: 0.92rem; }
+  .step-content strong { color: var(--white); }
+
+  /* CHART CONTAINER */
+  .chart-wrap {
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;
+  }
+  .chart-wrap h3 { text-align: center; margin-bottom: 1rem; font-size: 1rem; color: var(--gray); }
+  .chart-wrap canvas { max-height: 320px; }
+  .chart-wrap svg { width: 100%; height: auto; display: block; max-height: 340px; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 1rem 0; }
+  .data-table th {
+    background: rgba(14,116,144,0.3); color: var(--teal2); padding: 0.75rem 1rem;
+    text-align: left; font-weight: 700; border-bottom: 2px solid var(--teal);
+  }
+  .data-table td { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); color: #cbd5e1; }
+  .data-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .data-table tr:hover td { background: rgba(6,182,212,0.05); }
+
+  /* RAM TIMELINE */
+  .timeline-vis {
+    display: flex; align-items: center; gap: 2px; flex-wrap: wrap;
+    margin: 1.5rem 0; padding: 1.2rem; border-radius: 10px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  }
+  .tl-op {
+    height: 36px; background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700; color: white; flex: 1;
+    min-width: 60px; cursor: default;
+  }
+  .tl-fail {
+    height: 36px; background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700; color: white; width: 50px; flex-shrink: 0;
+  }
+  .tl-labels { display: flex; justify-content: space-around; margin-top: 0.5rem; }
+  .tl-lbl { font-size: 0.75rem; color: var(--gray); text-align: center; }
+
+  /* BETA CARDS */
+  .beta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .beta-card {
+    border-radius: 10px; padding: 1.3rem; text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .beta-val { font-size: 2.2rem; font-weight: 900; margin-bottom: 0.3rem; }
+  .beta-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .beta-action { font-size: 0.78rem; background: rgba(0,0,0,0.2); border-radius: 6px; padding: 0.3rem 0.6rem; margin-top: 0.4rem; }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: rgba(249,115,22,0.1); border-left: 4px solid var(--orange);
+    border-radius: 0 8px 8px 0; padding: 1rem 1.5rem; margin: 1.2rem 0;
+    color: #fed7aa;
+  }
+  .highlight.teal {
+    background: rgba(6,182,212,0.1); border-color: var(--teal2); color: #a5f3fc;
+  }
+  .highlight.green {
+    background: rgba(34,197,94,0.1); border-color: var(--green); color: #bbf7d0;
+  }
+  .highlight.red {
+    background: rgba(239,68,68,0.1); border-color: var(--red); color: #fecaca;
+  }
+
+  /* RADAR / OEE */
+  .oee-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: stretch; margin: 1.5rem 0; }
+  .oee-box {
+    flex: 1; min-width: 180px; border-radius: 10px; padding: 1.5rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .oee-box.disp { background: linear-gradient(135deg, rgba(6,182,212,0.15), rgba(6,182,212,0.05)); border: 1px solid rgba(6,182,212,0.3); }
+  .oee-box.rend { background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(249,115,22,0.05)); border: 1px solid rgba(249,115,22,0.3); }
+  .oee-box.cal { background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05)); border: 1px solid rgba(34,197,94,0.3); }
+  .oee-box.total { background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(168,85,247,0.05)); border: 1px solid rgba(168,85,247,0.3); }
+  .oee-box .pct { font-size: 2.5rem; font-weight: 900; }
+  .oee-box .name { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.3rem; color: var(--gray); }
+  .oee-box .eq { font-size: 0.75rem; color: var(--gray); margin-top: 0.5rem; }
+  .times-sign { display: flex; align-items: center; font-size: 1.5rem; color: var(--gray); font-weight: 300; }
+
+  /* LOSS GRID */
+  .loss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  .loss-item {
+    border-radius: 8px; padding: 1rem; border-left: 4px solid;
+  }
+  .loss-item.disp { border-color: var(--teal2); background: rgba(6,182,212,0.06); }
+  .loss-item.rend { border-color: var(--orange); background: rgba(249,115,22,0.06); }
+  .loss-item.cal { border-color: var(--green); background: rgba(34,197,94,0.06); }
+  .loss-num { font-size: 1.5rem; font-weight: 900; }
+  .loss-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+  .loss-desc { font-size: 0.8rem; color: var(--gray); }
+
+  /* ERROR CARDS */
+  .error-list { display: flex; flex-direction: column; gap: 0.8rem; }
+  .error-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 8px; padding: 1rem 1.2rem;
+  }
+  .error-icon { font-size: 1.3rem; flex-shrink: 0; }
+  .error-title { font-weight: 700; color: #fca5a5; font-size: 0.9rem; margin-bottom: 0.2rem; }
+  .error-desc { font-size: 0.83rem; color: #94a3b8; }
+
+  /* COMPARISON TABLE */
+  .dist-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .dist-table th { background: rgba(14,116,144,0.3); color: var(--teal2); padding: 0.8rem; border: 1px solid rgba(255,255,255,0.08); }
+  .dist-table td { padding: 0.75rem; border: 1px solid rgba(255,255,255,0.06); color: #cbd5e1; }
+  .dist-table tr:nth-child(odd) td { background: rgba(255,255,255,0.02); }
+
+  /* PROGRESS BAR */
+  .prog-bar { background: rgba(255,255,255,0.08); border-radius: 50px; height: 10px; overflow: hidden; margin: 0.5rem 0; }
+  .prog-fill { height: 100%; border-radius: 50px; transition: width 1s ease; }
+
+  /* SUMMARY BOX */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+  .summary-item {
+    background: rgba(255,255,255,0.04); border-radius: 10px; padding: 1.2rem;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .summary-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .summary-title { font-weight: 700; font-size: 0.9rem; color: var(--white); margin-bottom: 0.3rem; }
+  .summary-text { font-size: 0.8rem; color: var(--gray); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy); }
+  ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 2.5rem; color: var(--gray); font-size: 0.82rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  footer strong { color: var(--teal2); }
+
+  @media (max-width: 640px) {
+    .loss-grid { grid-template-columns: 1fr; }
+    .kpi-row { flex-direction: column; }
+    .oee-row { flex-direction: column; }
+    .times-sign { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav id="topnav">
+  <div class="logo">SESIÓN 1.2</div>
+  <a class="nav-item active" href="#intro">Inicio</a>
+  <a class="nav-item" href="#que-es">¿Qué es?</a>
+  <a class="nav-item" href="#ram">RAM</a>
+  <a class="nav-item" href="#tasa-falla">Tasa de Falla</a>
+  <a class="nav-item" href="#bañera">Curva Bañera</a>
+  <a class="nav-item" href="#weibull">Weibull</a>
+  <a class="nav-item" href="#distribuciones">Distribuciones</a>
+  <a class="nav-item" href="#indicadores">MTBF/MTTR</a>
+  <a class="nav-item" href="#disponibilidad">Disponibilidad</a>
+  <a class="nav-item" href="#oee">OEE</a>
+  <a class="nav-item" href="#sistemas">Sistemas</a>
+  <a class="nav-item" href="#errores">Errores</a>
+  <a class="nav-item" href="#resumen">Resumen</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="intro">
+  <div class="badge">Módulo 1 — Sesión 1.2</div>
+  <h1>Fundamentos de Ingeniería<br>de Confiabilidad</h1>
+  <p>Confiabilidad · Disponibilidad · Mantenibilidad (RAM)<br>Herramientas matemáticas para tomar decisiones de mantenimiento basadas en datos.</p>
+  <div class="trio">
+    <div class="trio-badge"><span>R</span> Reliability</div>
+    <div class="trio-badge"><span>A</span> Availability</div>
+    <div class="trio-badge"><span>M</span> Maintainability</div>
+  </div>
+</div>
+
+<main>
+
+<!-- ═══════════════════════════════════════
+     1. QUÉ ES LA CONFIABILIDAD
+════════════════════════════════════════ -->
+<section id="que-es">
+  <div class="section-label">01 · Fundamentos</div>
+  <h2>¿Qué es la Confiabilidad?</h2>
+  <p>
+    <strong>Definición formal:</strong> Probabilidad de que un equipo o sistema realice su función requerida, <em>sin falla</em>, durante un período de tiempo determinado, bajo condiciones de operación específicas.
+  </p>
+
+  <div class="cards cols-2" style="margin: 1.5rem 0;">
+    <div class="card accent-teal">
+      <h3>📊 Probabilidad</h3>
+      <p>Se expresa como un valor de 0 a 1 (o en porcentaje). No es una garantía, es una medida estadística del riesgo de falla.</p>
+    </div>
+    <div class="card accent-orange">
+      <h3>⚙️ Función Requerida</h3>
+      <p>Lo que el equipo DEBE hacer — no solo funcionar, sino cumplir su especificación de diseño (caudal, presión, etc.).</p>
+    </div>
+    <div class="card accent-green">
+      <h3>⏱️ Período de Tiempo</h3>
+      <p>La confiabilidad siempre se asocia a un intervalo específico. No es infinita — a mayor tiempo, menor confiabilidad.</p>
+    </div>
+    <div class="card accent-yellow">
+      <h3>🌡️ Condiciones de Operación</h3>
+      <p>Temperatura, carga, fluido, frecuencia de arranques. Un equipo puede ser muy confiable bajo condiciones normales pero fallar con sobrecarga.</p>
+    </div>
+  </div>
+
+  <!-- Función R(t) -->
+  <h3>Confiabilidad como función del tiempo — R(t)</h3>
+  <div class="formula-box">
+    <span class="formula-main">R(t) = e<sup>−λt</sup></span>
+    <small>donde λ = tasa de falla (fallas/hora) &nbsp;|&nbsp; F(t) = 1 − R(t) = probabilidad de falla acumulada</small>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Curva de Confiabilidad R(t) — Bomba centrífuga (λ = 0.002 fallas/h)</h3>
+    <div id="chartRt"></div>
+  </div>
+
+  <div class="highlight teal">
+    💡 <strong>Ejemplo práctico:</strong> Con λ = 0.002 fallas/h:<br>
+    R(200 h) = e<sup>−0.002×200</sup> = e<sup>−0.4</sup> = <strong>67.03%</strong> &nbsp;|&nbsp;
+    R(500 h) = e<sup>−1.0</sup> = <strong>36.79%</strong><br>
+    A mayor tiempo de operación, la confiabilidad cae significativamente.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     2. EL TRÍO RAM
+════════════════════════════════════════ -->
+<section id="ram">
+  <div class="section-label">02 · El Trío RAM</div>
+  <h2>Confiabilidad · Disponibilidad · Mantenibilidad</h2>
+
+  <div class="cards cols-3" style="margin: 1.5rem 0;">
+    <div class="card accent-teal">
+      <div style="font-size:2.5rem;font-weight:900;color:var(--teal2);">R</div>
+      <h3>Reliability — Confiabilidad</h3>
+      <p>¿Cuánto tiempo funciona sin fallar?</p>
+      <div style="background:rgba(6,182,212,0.1);border-radius:6px;padding:0.5rem;font-family:monospace;font-size:0.85rem;text-align:center;color:var(--teal2);">Indicador: MTBF</div>
+    </div>
+    <div class="card accent-orange">
+      <div style="font-size:2.5rem;font-weight:900;color:var(--orange);">A</div>
+      <h3>Availability — Disponibilidad</h3>
+      <p>¿Qué porcentaje del tiempo está listo para operar?</p>
+      <div style="background:rgba(249,115,22,0.1);border-radius:6px;padding:0.5rem;font-family:monospace;font-size:0.8rem;text-align:center;color:var(--orange);">A = MTBF / (MTBF + MTTR)</div>
+    </div>
+    <div class="card accent-green">
+      <div style="font-size:2.5rem;font-weight:900;color:var(--green);">M</div>
+      <h3>Maintainability — Mantenibilidad</h3>
+      <p>¿Qué tan rápido se restaura el equipo?</p>
+      <div style="background:rgba(34,197,94,0.1);border-radius:6px;padding:0.5rem;font-family:monospace;font-size:0.85rem;text-align:center;color:var(--green);">Indicador: MTTR</div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    🎯 <strong>Objetivo:</strong> Maximizar R (confiabilidad) y A (disponibilidad), mientras se Minimiza MTTR (tiempo de reparación).
+  </div>
+
+  <!-- Timeline visual -->
+  <h3 style="margin-top:2rem;">La Relación R–A–M en la Línea de Tiempo</h3>
+  <div class="timeline-vis">
+    <div class="tl-op">MTBF ← Operando →</div>
+    <div class="tl-fail">MTTR</div>
+    <div class="tl-op" style="flex:1.5">← MTBF → Operando</div>
+    <div class="tl-fail">MTTR</div>
+    <div class="tl-op" style="flex:0.8">MTBF</div>
+    <div class="tl-fail">MTTR</div>
+    <div class="tl-op" style="flex:2">← MTBF largo →</div>
+  </div>
+  <div style="display:flex;gap:2rem;flex-wrap:wrap;font-size:0.82rem;color:var(--gray);padding:0.5rem 0;">
+    <span>🟩 <strong style="color:#22c55e;">Bloques verdes</strong> = Período de operación (lo determina la Confiabilidad)</span>
+    <span>🟥 <strong style="color:#ef4444;">Bloques rojos</strong> = Tiempo de reparación (lo determina la Mantenibilidad)</span>
+    <span>📊 <strong style="color:var(--teal2);">Disponibilidad</strong> = % tiempo en verde vs. tiempo total</span>
+  </div>
+
+  <!-- Ejemplo disponibilidad -->
+  <h3 style="margin-top:2rem;">Ejemplo: Compresor — Datos anuales</h3>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="val">8.640</div>
+      <div class="lbl">Horas operando</div>
+      <div class="desc">8.760 − 120 h paradas</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--orange);">1.440</div>
+      <div class="lbl">MTBF (horas)</div>
+      <div class="desc">8.640 ÷ 6 fallas</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--red);">20</div>
+      <div class="lbl">MTTR (horas)</div>
+      <div class="desc">120 ÷ 6 reparaciones</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--green);">98.6%</div>
+      <div class="lbl">Disponibilidad</div>
+      <div class="desc">1440 / (1440+20)</div>
+    </div>
+  </div>
+  <div class="highlight red">
+    💰 Las 120 horas de parada × $500.000/hora = <strong>$60.000.000/año en pérdidas de producción.</strong>
+  </div>
+
+  <!-- Mantenibilidad -->
+  <h3 style="margin-top:2rem;">M — Factores que Afectan la Mantenibilidad</h3>
+  <div class="cards cols-3">
+    <div class="card">
+      <h3>🔩 Diseño del Equipo</h3>
+      <p>Accesibilidad de componentes, modularidad, estandarización de piezas. <em>Se diseña, no se improvisa.</em></p>
+    </div>
+    <div class="card">
+      <h3>📦 Factores Logísticos</h3>
+      <p>Disponibilidad de repuestos en almacén, herramientas especiales, documentación técnica actualizada.</p>
+    </div>
+    <div class="card">
+      <h3>👷 Factor Humano</h3>
+      <p>Capacitación del técnico, experiencia con el equipo específico, claridad de procedimientos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     3. TASA DE FALLA
+════════════════════════════════════════ -->
+<section id="tasa-falla">
+  <div class="section-label">03 · Tasa de Falla</div>
+  <h2>Tasa de Falla — λ(t)</h2>
+  <p>La tasa de falla λ(t) es la probabilidad instantánea de falla dado que el equipo ha sobrevivido hasta el tiempo t. Es el concepto MÁS IMPORTANTE para elegir el tipo de mantenimiento óptimo.</p>
+
+  <div class="beta-grid">
+    <div class="beta-card" style="background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.3);">
+      <div class="beta-val" style="color:var(--green);">λ↓</div>
+      <div class="beta-title" style="color:var(--green);">Decreciente</div>
+      <p style="font-size:0.85rem;color:#94a3b8;">Fallas tempranas que disminuyen con el tiempo. <strong>Mortalidad infantil.</strong></p>
+      <div class="beta-action" style="color:#bbf7d0;">✅ Estrategia: PROACTIVO — Buscar causa raíz</div>
+    </div>
+    <div class="beta-card" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.3);">
+      <div class="beta-val" style="color:var(--teal2);">λ→</div>
+      <div class="beta-title" style="color:var(--teal2);">Constante</div>
+      <p style="font-size:0.85rem;color:#94a3b8;">Fallas aleatorias, no relacionadas con el tiempo. <strong>Fase de vida útil.</strong></p>
+      <div class="beta-action" style="color:#a5f3fc;">📡 Estrategia: PREDICTIVO — Monitoreo de condición</div>
+    </div>
+    <div class="beta-card" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);">
+      <div class="beta-val" style="color:var(--orange);">λ↑</div>
+      <div class="beta-title" style="color:var(--orange);">Creciente</div>
+      <p style="font-size:0.85rem;color:#94a3b8;">Fallas que aumentan por desgaste o fatiga. <strong>Fase de desgaste.</strong></p>
+      <div class="beta-action" style="color:#fed7aa;">🔧 Estrategia: PREVENTIVO — Reemplazo programado</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     4. CURVA DE LA BAÑERA
+════════════════════════════════════════ -->
+<section id="bañera">
+  <div class="section-label">04 · Curva de la Bañera</div>
+  <h2>La Curva de la Bañera (Bathtub Curve)</h2>
+  <p>Representa cómo varía la tasa de falla λ(t) a lo largo de la vida útil de un equipo. Integra las tres etapas naturales de comportamiento de falla.</p>
+
+  <div class="chart-wrap">
+    <h3>Curva de la Bañera — Tasa de Falla vs. Tiempo de Vida</h3>
+    <div id="chartBathtub"></div>
+  </div>
+
+  <div class="cards cols-3" style="margin-top:1.5rem;">
+    <div class="card accent-red">
+      <div style="font-size:1.8rem;font-weight:900;color:var(--red);">β &lt; 1</div>
+      <h3>Fase 1 — Mortalidad Infantil</h3>
+      <p style="font-size:0.87rem;">λ <strong>decreciente</strong>. Fallas por defectos de fabricación, errores de instalación, componentes defectuosos.</p>
+      <div class="highlight red" style="margin-top:0.8rem;font-size:0.82rem;">🎯 Estrategia: Control de calidad, burn-in, capacitación al personal de instalación.</div>
+    </div>
+    <div class="card accent-teal">
+      <div style="font-size:1.8rem;font-weight:900;color:var(--teal2);">β ≈ 1</div>
+      <h3>Fase 2 — Vida Útil Normal</h3>
+      <p style="font-size:0.87rem;">λ <strong>constante</strong>. Fallas aleatorias, sobrecargas imprevistas, factores externos no controlados.</p>
+      <div class="highlight teal" style="margin-top:0.8rem;font-size:0.82rem;">📡 Estrategia: Mantenimiento PREDICTIVO (monitoreo de condición, vibraciones, termografía).</div>
+    </div>
+    <div class="card accent-orange">
+      <div style="font-size:1.8rem;font-weight:900;color:var(--orange);">β &gt; 1</div>
+      <h3>Fase 3 — Desgaste</h3>
+      <p style="font-size:0.87rem;">λ <strong>creciente</strong>. Desgaste mecánico, fatiga, corrosión, degradación progresiva.</p>
+      <div class="highlight" style="margin-top:0.8rem;font-size:0.82rem;">🔧 Estrategia: Mantenimiento PREVENTIVO (reemplazo programado antes de la falla).</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     5. DISTRIBUCIÓN WEIBULL
+════════════════════════════════════════ -->
+<section id="weibull">
+  <div class="section-label">05 · Distribución Weibull</div>
+  <h2>Weibull — La navaja suiza de la confiabilidad</h2>
+  <p>La distribución Weibull es la herramienta más versátil para modelar fallas. A diferencia de la exponencial (que asume λ constante), Weibull puede modelar las 3 fases de la curva de la bañera cambiando el valor de β.</p>
+
+  <div class="formula-box">
+    <span class="formula-main">R(t) = e<sup>−(t/η)<sup>β</sup></sup></span>
+    <small>β (beta) = parámetro de FORMA → define CÓMO falla &nbsp;|&nbsp; η (eta) = parámetro de ESCALA → define CUÁNDO ocurre la falla típica</small>
+  </div>
+
+  <div class="chart-wrap">
+    <h3>Tasa de Falla λ(t) para diferentes valores de β (Weibull)</h3>
+    <div id="chartWeibull"></div>
+  </div>
+
+  <!-- Beta significado -->
+  <h3 style="margin-top:2rem;">El significado del parámetro β (Beta)</h3>
+  <table class="data-table" style="margin-top:1rem;">
+    <thead>
+      <tr><th>β (Beta)</th><th>Fase</th><th>λ(t)</th><th>Tipo de Mantenimiento</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong style="color:var(--red);">β &lt; 1</strong></td>
+        <td>Mortalidad Infantil</td>
+        <td>Decreciente</td>
+        <td><span style="color:#bbf7d0;">Proactivo / Causa Raíz</span></td>
+        <td>Rodamientos mal instalados (β = 0.5)</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--teal2);">β = 1</strong></td>
+        <td>Fallas Aleatorias</td>
+        <td>Constante</td>
+        <td><span style="color:#a5f3fc;">Predictivo / Condición</span></td>
+        <td>Tarjetas electrónicas (β = 1.0)</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--orange);">β = 2</strong></td>
+        <td>Desgaste moderado</td>
+        <td>Creciente</td>
+        <td><span style="color:#fed7aa;">Preventivo programado</span></td>
+        <td>Desgaste de sellos mecánicos</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--orange);">β &gt; 3</strong></td>
+        <td>Desgaste severo / Fatiga</td>
+        <td>Creciente rápido</td>
+        <td><span style="color:#fed7aa;">Preventivo por horas</span></td>
+        <td>Fatiga en ejes (β = 3.5)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="highlight teal" style="margin-top:1.5rem;">
+    ⭐ <strong>η (eta) = Vida característica:</strong> El tiempo al cual el <strong>63.2%</strong> de los equipos habrán fallado, independientemente del valor de β. Es el parámetro que define la escala de tiempo del modo de falla.
+  </div>
+
+  <!-- Interpretación Weibull -->
+  <h3 style="margin-top:2rem;">Ejemplo de Interpretación: β = 2.5, η = 1.500 h</h3>
+  <div class="cards cols-2">
+    <div class="card">
+      <h3>🔍 β = 2.5 → Desgaste</h3>
+      <p>β &gt; 1 confirma que el modo de falla es por <strong>desgaste</strong>. La tasa de falla crece con el tiempo. El mantenimiento preventivo (reemplazo programado) <strong>SÍ es efectivo</strong>.</p>
+    </div>
+    <div class="card">
+      <h3>⏰ η = 1.500 h → Cuándo reemplazar</h3>
+      <p>Para garantizar R ≥ 90%:<br>
+      <code style="color:var(--teal2);">t = 1500 × (−ln(0.90))^(1/2.5) ≈ 554 horas</code><br>
+      → Programar reemplazo cada <strong>550 horas</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     6. DISTRIBUCIONES
+════════════════════════════════════════ -->
+<section id="distribuciones">
+  <div class="section-label">06 · Distribuciones de Probabilidad</div>
+  <h2>Distribuciones de Falla Más Usadas</h2>
+
+  <div class="cards cols-3">
+    <div class="card accent-teal">
+      <h3>📉 Exponencial</h3>
+      <p>Caso especial de Weibull con β = 1. Tasa de falla <strong>constante</strong>. Sin memoria.</p>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">R(t) = e<sup>−λt</sup></span>
+        <small>MTBF = 1/λ</small>
+      </div>
+      <p style="font-size:0.82rem;color:var(--gray);">Aplica a: equipos electrónicos, fase 2 de la bañera. <strong>No modela desgaste.</strong></p>
+    </div>
+    <div class="card accent-orange">
+      <h3>🔧 Weibull</h3>
+      <p>La más versátil. Modela las <strong>3 fases</strong> de la curva de la bañera según β.</p>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">R(t) = e<sup>−(t/η)<sup>β</sup></sup></span>
+        <small>β define el modo de falla</small>
+      </div>
+      <p style="font-size:0.82rem;color:var(--gray);">Aplica a: cualquier equipo mecánico con historial de fallas suficiente.</p>
+    </div>
+    <div class="card accent-green">
+      <h3>📊 Log-Normal</h3>
+      <p>El logaritmo del tiempo de falla sigue una distribución normal. Sesgada a la derecha.</p>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">ln(T) ~ N(μ', σ')</span>
+        <small>μ' = media del log, σ' = desviación</small>
+      </div>
+      <p style="font-size:0.82rem;color:var(--gray);">Aplica a: tiempos de reparación (MTTR), fatiga de materiales, semiconductores.</p>
+    </div>
+  </div>
+
+  <!-- Tabla comparativa -->
+  <h3 style="margin-top:2rem;">Tabla Comparativa de Distribuciones</h3>
+  <table class="dist-table" style="margin-top:1rem;">
+    <thead>
+      <tr><th>Distribución</th><th>λ(t)</th><th>Parámetros</th><th>Aplica cuando</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Exponencial</strong></td>
+        <td>Constante</td>
+        <td>λ</td>
+        <td>Fallas aleatorias, sin desgaste</td>
+        <td>Tarjetas electrónicas</td>
+      </tr>
+      <tr>
+        <td><strong>Weibull β &lt; 1</strong></td>
+        <td>Decreciente</td>
+        <td>β, η</td>
+        <td>Fallas tempranas que disminuyen</td>
+        <td>Equipos nuevos mal instalados</td>
+      </tr>
+      <tr>
+        <td><strong>Weibull β = 1</strong></td>
+        <td>Constante</td>
+        <td>β, η</td>
+        <td>Equivalente a exponencial</td>
+        <td>Sistemas electrónicos</td>
+      </tr>
+      <tr>
+        <td><strong>Weibull β &gt; 1</strong></td>
+        <td>Creciente</td>
+        <td>β, η</td>
+        <td>Desgaste, fatiga, degradación</td>
+        <td>Rodamientos, sellos, correas</td>
+      </tr>
+      <tr>
+        <td><strong>Log-Normal</strong></td>
+        <td>Variable</td>
+        <td>μ', σ'</td>
+        <td>Degradación multiplicativa</td>
+        <td>MTTR, fatiga de materiales</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Nolan & Heap -->
+  <h3 style="margin-top:2rem;">Nolan & Heap + Weibull: La Conexión Clave</h3>
+  <p>Recordando de la Sesión 1.1: <strong>solo el 11% de las fallas siguen patrón de desgaste</strong>. Con Weibull podemos cuantificarlo por patrón:</p>
+
+  <div style="margin:1.5rem 0;">
+    <div style="margin-bottom:0.8rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+        <span style="font-size:0.85rem;">Patrón F — Mortalidad infantil + constante (β &lt; 1 → β ≈ 1)</span>
+        <strong style="color:var(--red);">68%</strong>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:68%;background:linear-gradient(90deg,var(--red),#f87171);"></div></div>
+    </div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+        <span style="font-size:0.85rem;">Patrón E — Aleatorio puro (β = 1)</span>
+        <strong style="color:var(--orange);">14%</strong>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:14%;background:linear-gradient(90deg,var(--orange),#fb923c);"></div></div>
+    </div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+        <span style="font-size:0.85rem;">Patrón D — Aleatorio inicialmente (β ≈ 1)</span>
+        <strong style="color:var(--yellow);">7%</strong>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:7%;background:linear-gradient(90deg,var(--yellow),#fbbf24);"></div></div>
+    </div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+        <span style="font-size:0.85rem;">Patrón C — Desgaste gradual (β &gt; 1)</span>
+        <strong style="color:var(--teal2);">5%</strong>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:5%;background:linear-gradient(90deg,var(--teal2),var(--teal));"></div></div>
+    </div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+        <span style="font-size:0.85rem;">Patrón B — Desgaste constante (β &gt; 1)</span>
+        <strong style="color:var(--green);">2%</strong>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:2%;background:linear-gradient(90deg,var(--green),#4ade80);"></div></div>
+    </div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;">
+        <span style="font-size:0.85rem;">Patrón A — Curva de bañera completa</span>
+        <strong style="color:var(--green);">4%</strong>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:4%;background:linear-gradient(90deg,var(--green),#4ade80);"></div></div>
+    </div>
+  </div>
+
+  <div class="highlight red">
+    🚨 <strong>Conclusión práctica:</strong> Para el <strong>89% de los modos de falla</strong> (β ≤ 1), el mantenimiento preventivo por calendario <strong>NO funciona</strong>. Solo para el 11% con β &gt; 1 tiene sentido reemplazar por tiempo fijo. Para el 89% restante → <strong>Mantenimiento PREDICTIVO</strong>.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     7. INDICADORES MTBF / MTTR
+════════════════════════════════════════ -->
+<section id="indicadores">
+  <div class="section-label">07 · Indicadores Clave</div>
+  <h2>MTBF · MTTR · MTTF</h2>
+
+  <div class="cards cols-3">
+    <div class="card accent-teal">
+      <div style="font-size:1.4rem;font-weight:900;color:var(--teal2);">MTBF</div>
+      <h3>Mean Time Between Failures</h3>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">MTBF = T<sub>op</sub> / N<sub>fallas</sub></span>
+      </div>
+      <p style="font-size:0.85rem;">Solo para equipos <strong>reparables</strong>. Tiempo promedio entre fallas consecutivas. <span style="color:var(--green);">→ MAXIMIZAR</span></p>
+    </div>
+    <div class="card accent-red">
+      <div style="font-size:1.4rem;font-weight:900;color:var(--red);">MTTR</div>
+      <h3>Mean Time To Repair</h3>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">MTTR = Σt<sub>rep</sub> / N<sub>rep</sub></span>
+      </div>
+      <p style="font-size:0.85rem;">Mide la eficiencia del equipo de mantenimiento. Incluye diagnóstico + reparación + pruebas. <span style="color:var(--red);">→ MINIMIZAR</span></p>
+    </div>
+    <div class="card accent-orange">
+      <div style="font-size:1.4rem;font-weight:900;color:var(--orange);">MTTF</div>
+      <h3>Mean Time To Failure</h3>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">MTTF = Σt<sub>falla</sub> / N<sub>unidades</sub></span>
+      </div>
+      <p style="font-size:0.85rem;">Para equipos <strong>NO reparables</strong> (bombillas, fusibles, rodamientos). El equipo no se repara, se reemplaza. <span style="color:var(--green);">→ MAXIMIZAR</span></p>
+    </div>
+  </div>
+
+  <div class="highlight red" style="margin-top:1.5rem;">
+    ⚠️ <strong>Error común:</strong> Confundir MTBF con MTTF. MTBF → equipos reparables (bomba, motor, compresor). MTTF → componentes no reparables (bombilla, fusible, rodamiento). ¡No son intercambiables!
+  </div>
+
+  <!-- Ejemplo MTBF -->
+  <h3 style="margin-top:2rem;">Ejemplo: Motor Eléctrico</h3>
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="val">4.000</div>
+      <div class="lbl">Horas de operación</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--red);">5</div>
+      <div class="lbl">Número de fallas</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--teal2);">800</div>
+      <div class="lbl">MTBF (horas)</div>
+      <div class="desc">4.000 / 5 fallas</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--orange);">0.00125</div>
+      <div class="lbl">λ (fallas/hora)</div>
+      <div class="desc">1 / MTBF</div>
+    </div>
+  </div>
+
+  <!-- Tabla resumen indicadores -->
+  <h3 style="margin-top:2rem;">Resumen de Todos los Indicadores</h3>
+  <table class="data-table" style="margin-top:1rem;">
+    <thead>
+      <tr><th>Indicador</th><th>Fórmula</th><th>Meta</th><th>Aplica a</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong style="color:var(--teal2);">MTBF</strong></td><td>T_operando / N_fallas</td><td style="color:var(--green);">↑ Maximizar</td><td>Equipos reparables</td></tr>
+      <tr><td><strong style="color:var(--orange);">MTTF</strong></td><td>Σt_falla / N_unidades</td><td style="color:var(--green);">↑ Maximizar</td><td>Componentes no reparables</td></tr>
+      <tr><td><strong style="color:var(--red);">MTTR</strong></td><td>Σt_rep / N_rep</td><td style="color:var(--red);">↓ Minimizar</td><td>Todo equipo mantenible</td></tr>
+      <tr><td><strong style="color:var(--yellow);">MDT</strong></td><td>MTTR + logístico + admin</td><td style="color:var(--red);">↓ Minimizar</td><td>Operación real</td></tr>
+      <tr><td><strong>λ</strong></td><td>1/MTBF (si constante)</td><td style="color:var(--red);">↓ Minimizar</td><td>Análisis de confiabilidad</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════
+     8. DISPONIBILIDAD
+════════════════════════════════════════ -->
+<section id="disponibilidad">
+  <div class="section-label">08 · Disponibilidad</div>
+  <h2>Tipos de Disponibilidad</h2>
+
+  <div class="cards cols-3">
+    <div class="card accent-teal">
+      <h3>Ai — Disponibilidad Inherente</h3>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">Ai = MTBF / (MTBF + MTTR)</span>
+      </div>
+      <p style="font-size:0.85rem;">Solo cuenta tiempos de reparación correctiva. La más optimista. No incluye mantenimiento preventivo.</p>
+    </div>
+    <div class="card accent-orange">
+      <h3>Aa — Disponibilidad Alcanzada</h3>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">Aa = MTBM / (MTBM + M̄)</span>
+      </div>
+      <p style="font-size:0.85rem;">MTBM = tiempo entre mantenimientos (correctivo + preventivo). Más realista que Ai.</p>
+    </div>
+    <div class="card accent-green">
+      <h3>Ao — Disponibilidad Operacional</h3>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">Ao = MTBM / (MTBM + MDT)</span>
+      </div>
+      <p style="font-size:0.85rem;">MDT incluye: MTTR + logística + admin. La más <strong>realista</strong>. Meta clase mundial: <strong>≥ 95%</strong>.</p>
+    </div>
+  </div>
+
+  <!-- Ejercicio completo -->
+  <h3 style="margin-top:2rem;">Ejercicio Completo — Bomba Centrífuga (12 meses)</h3>
+  <div class="cards cols-2">
+    <div class="card">
+      <h3>📋 Datos del Problema</h3>
+      <table class="data-table">
+        <tr><td>Horas calendario</td><td><strong>8.760 h</strong></td></tr>
+        <tr><td>Paro preventivo</td><td><strong>240 h</strong></td></tr>
+        <tr><td>Número de fallas</td><td><strong>8</strong></td></tr>
+        <tr><td>Tiempo total de reparación</td><td><strong>160 h</strong></td></tr>
+        <tr><td>Tiempo logístico</td><td><strong>80 h</strong></td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>📐 Solución Paso a Paso</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content"><p><strong>T_op</strong> = 8.760 − 240 − 160 − 80 = <strong style="color:var(--teal2);">8.280 h</strong></p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><p><strong>MTBF</strong> = 8.280 / 8 = <strong style="color:var(--teal2);">1.035 h</strong></p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content"><p><strong>MTTR</strong> = 160 / 8 = <strong style="color:var(--red);">20 h</strong></p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><p><strong>MDT</strong> = 20 + (80/8) = <strong style="color:var(--red);">30 h</strong></p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content"><p><strong>Ai</strong> = 1035/(1035+20) = <strong style="color:var(--green);">98.1%</strong></p></div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content"><p><strong>Ao</strong> = 1035/(1035+30) = <strong style="color:var(--orange);">97.2%</strong></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight teal">
+    💡 La diferencia entre Ai (98.1%) y Ao (97.2%) muestra el <strong>impacto real de la logística</strong>: 80 horas en espera de repuestos o trámites reducen la disponibilidad real en 0.9 puntos porcentuales.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     9. OEE
+════════════════════════════════════════ -->
+<section id="oee">
+  <div class="section-label">09 · OEE</div>
+  <h2>OEE — Efectividad Global del Equipo</h2>
+  <p>El OEE (Overall Equipment Effectiveness) combina tres factores para medir la productividad total de un equipo. Identifica exactamente qué tipo de pérdida es la más significativa.</p>
+
+  <div class="formula-box">
+    <span class="formula-main">OEE = Disponibilidad × Rendimiento × Calidad</span>
+    <small>Meta clase mundial: OEE ≥ 85% (Disp 90% × Rend 95% × Cal 99.9%)</small>
+  </div>
+
+  <!-- OEE boxes -->
+  <div class="oee-row" style="margin:1.5rem 0;align-items:center;">
+    <div class="oee-box disp">
+      <div class="pct" style="color:var(--teal2);">90%</div>
+      <div class="name">Disponibilidad</div>
+      <div class="eq">T_operando / T_planificado</div>
+    </div>
+    <div class="times-sign">×</div>
+    <div class="oee-box rend">
+      <div class="pct" style="color:var(--orange);">95%</div>
+      <div class="name">Rendimiento</div>
+      <div class="eq">Producción real / Teórica</div>
+    </div>
+    <div class="times-sign">×</div>
+    <div class="oee-box cal">
+      <div class="pct" style="color:var(--green);">99.9%</div>
+      <div class="name">Calidad</div>
+      <div class="eq">Piezas buenas / Totales</div>
+    </div>
+    <div class="times-sign">=</div>
+    <div class="oee-box total">
+      <div class="pct" style="color:#c084fc;">85%</div>
+      <div class="name">OEE Clase Mundial</div>
+      <div class="eq">Meta industria</div>
+    </div>
+  </div>
+
+  <!-- Ejemplo OEE -->
+  <h3>Ejemplo: Línea de Producción (Turno 480 min)</h3>
+  <div class="cards cols-2" style="margin-top:1rem;">
+    <div class="card">
+      <h3>Datos del turno</h3>
+      <table class="data-table">
+        <tr><td>Turno</td><td>480 min</td></tr>
+        <tr><td>Paradas</td><td>50 min</td></tr>
+        <tr><td>Velocidad teórica</td><td>100 uds/min</td></tr>
+        <tr><td>Producción real</td><td>38.700 uds</td></tr>
+        <tr><td>Defectos</td><td>1.200 uds</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Cálculo OEE</h3>
+      <div style="margin-bottom:0.8rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.88rem;">
+          <span>Disponibilidad = (480−50)/480</span><strong style="color:var(--teal2);">89.6%</strong>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:89.6%;background:var(--teal2);"></div></div>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.88rem;">
+          <span>Rendimiento = 38.700 / (100×430)</span><strong style="color:var(--orange);">90.0%</strong>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:90%;background:var(--orange);"></div></div>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.88rem;">
+          <span>Calidad = 37.500 / 38.700</span><strong style="color:var(--green);">96.9%</strong>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:96.9%;background:var(--green);"></div></div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:1rem;padding-top:1rem;">
+        <div style="display:flex;justify-content:space-between;font-size:1rem;font-weight:700;">
+          <span>OEE = 89.6 × 90.0 × 96.9%</span><strong style="color:#f87171;">78.1%</strong>
+        </div>
+        <div class="prog-bar" style="height:14px;margin-top:0.5rem;"><div class="prog-fill" style="width:78.1%;background:linear-gradient(90deg,var(--red),var(--orange));"></div></div>
+        <p style="font-size:0.8rem;color:var(--gray);margin-top:0.5rem;">Por debajo de la meta 85% clase mundial. Área de mejora: <strong>Rendimiento</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 grandes pérdidas -->
+  <h3 style="margin-top:2rem;">Las 6 Grandes Pérdidas del TPM</h3>
+  <div class="loss-grid">
+    <div class="loss-item disp">
+      <div class="loss-num" style="color:var(--teal2);">1</div>
+      <div class="loss-name" style="color:var(--teal2);">Fallas de equipo</div>
+      <div class="loss-desc">Motor quemado, bomba trabada — paradas no programadas</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--teal2);margin-top:0.4rem;">DISPONIBILIDAD</div>
+    </div>
+    <div class="loss-item disp">
+      <div class="loss-num" style="color:var(--teal2);">2</div>
+      <div class="loss-name" style="color:var(--teal2);">Setups y ajustes</div>
+      <div class="loss-desc">Cambio de producto, calibración, ajustes de setup</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--teal2);margin-top:0.4rem;">DISPONIBILIDAD</div>
+    </div>
+    <div class="loss-item rend">
+      <div class="loss-num" style="color:var(--orange);">3</div>
+      <div class="loss-name" style="color:var(--orange);">Micro-paradas</div>
+      <div class="loss-desc">Atascos momentáneos, sensores obstruidos, paradas &lt;5 min</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--orange);margin-top:0.4rem;">RENDIMIENTO</div>
+    </div>
+    <div class="loss-item rend">
+      <div class="loss-num" style="color:var(--orange);">4</div>
+      <div class="loss-name" style="color:var(--orange);">Velocidad reducida</div>
+      <div class="loss-desc">Operar a 80% por vibración alta o desgaste interno</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--orange);margin-top:0.4rem;">RENDIMIENTO</div>
+    </div>
+    <div class="loss-item cal">
+      <div class="loss-num" style="color:var(--green);">5</div>
+      <div class="loss-name" style="color:var(--green);">Defectos de proceso</div>
+      <div class="loss-desc">Producto fuera de especificación, reproceso</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--green);margin-top:0.4rem;">CALIDAD</div>
+    </div>
+    <div class="loss-item cal">
+      <div class="loss-num" style="color:var(--green);">6</div>
+      <div class="loss-name" style="color:var(--green);">Pérdidas de arranque</div>
+      <div class="loss-desc">Desperdicio al iniciar la máquina, producto hasta estabilizar</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--green);margin-top:0.4rem;">CALIDAD</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap" style="margin-top:1.5rem;">
+    <h3>Distribución OEE — Ejemplo Línea de Producción</h3>
+    <div id="chartOEE"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     10. CONFIABILIDAD DE SISTEMAS
+════════════════════════════════════════ -->
+<section id="sistemas">
+  <div class="section-label">10 · Confiabilidad de Sistemas</div>
+  <h2>Configuraciones Serie, Paralelo y Mixtas</h2>
+
+  <div class="cards cols-2">
+    <div class="card accent-red">
+      <h3>🔗 Configuración en SERIE</h3>
+      <p>TODOS los componentes deben funcionar. Si cualquiera falla, el sistema falla.</p>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">R<sub>s</sub> = R<sub>A</sub> × R<sub>B</sub> × R<sub>C</sub> × ...</span>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.8rem;margin-top:0.5rem;font-family:monospace;font-size:0.82rem;">
+        [A:0.95] ─── [B:0.95] ─── [C:0.95]<br>
+        R<sub>s</sub> = 0.95³ = <strong style="color:var(--red);">85.7%</strong><br>
+        Con 10 en serie: 0.95¹⁰ = <strong style="color:var(--red);">59.9%</strong>
+      </div>
+      <p style="font-size:0.82rem;margin-top:0.8rem;color:var(--gray);">El sistema es tan confiable como su eslabón más débil. La confiabilidad cae con cada componente adicional.</p>
+    </div>
+    <div class="card accent-green">
+      <h3>⚡ Configuración en PARALELO</h3>
+      <p>El sistema funciona si AL MENOS UN componente funciona. Agrega redundancia.</p>
+      <div class="formula-box" style="padding:0.8rem;margin:0.8rem 0;">
+        <span class="formula-main" style="font-size:1rem;">R<sub>s</sub> = 1 − (1−R<sub>A</sub>)(1−R<sub>B</sub>)</span>
+      </div>
+      <div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:0.8rem;margin-top:0.5rem;font-family:monospace;font-size:0.82rem;">
+        [A:0.90] ═══╗<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;══ Sistema<br>
+        [B:0.90] ═══╝<br>
+        R<sub>s</sub> = 1 − (0.10)(0.10) = <strong style="color:var(--green);">99%</strong>
+      </div>
+      <p style="font-size:0.82rem;margin-top:0.8rem;color:var(--gray);">La redundancia aumentó la confiabilidad de 90% a 99%. ¡La misma estrategia usada en hospitales y plantas nucleares!</p>
+    </div>
+  </div>
+
+  <div class="chart-wrap" style="margin-top:1.5rem;">
+    <h3>Impacto de la Redundancia — Comparativa Serie vs. Paralelo</h3>
+    <div id="chartSistemas"></div>
+  </div>
+
+  <!-- Sistema mixto -->
+  <h3 style="margin-top:2rem;">Ejemplo: Sistema Serie-Paralelo (Mixto)</h3>
+  <div class="highlight teal">
+    Sistema de bombeo: 2 bombas en paralelo + 1 intercambiador en serie<br>
+    R_A = R_B = 0.90 (bombas) &nbsp;|&nbsp; R_C = 0.95 (intercambiador)
+  </div>
+  <div class="kpi-row" style="margin-top:1rem;">
+    <div class="kpi">
+      <div class="val" style="color:var(--green);">0.99</div>
+      <div class="lbl">R_bombas (paralelo)</div>
+      <div class="desc">1 − (0.1)(0.1)</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--teal2);">94.1%</div>
+      <div class="lbl">R_sistema (total)</div>
+      <div class="desc">0.99 × 0.95</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--red);">85.5%</div>
+      <div class="lbl">Sin redundancia</div>
+      <div class="desc">0.90 × 0.95</div>
+    </div>
+    <div class="kpi">
+      <div class="val" style="color:var(--green);">+8.6%</div>
+      <div class="lbl">Mejora con redundancia</div>
+    </div>
+  </div>
+
+  <!-- k-de-n -->
+  <h3 style="margin-top:2rem;">Configuración k-de-n</h3>
+  <p>Un sistema que funciona si <strong>al menos k de n</strong> componentes operan.</p>
+  <div class="card">
+    <h3>Ejemplo: Planta con 4 generadores, necesita al menos 3 (sistema 3-de-4), R=0.90</h3>
+    <div class="formula-box" style="margin:1rem 0;">
+      <span class="formula-main" style="font-size:1rem;">R<sub>3-de-4</sub> = C(4,3)×0.90³×0.10¹ + C(4,4)×0.90⁴×0.10⁰</span>
+      <small>= 4×0.729×0.10 + 1×0.6561×1 = 0.2916 + 0.6561 = <strong>0.9477 (94.8%)</strong></small>
+    </div>
+    <p style="font-size:0.85rem;color:var(--gray);">Aplicaciones: sistemas de control con votación 2-de-3, plantas de generación con contingencia n-1, sistemas de bombeo con múltiples unidades.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     11. ERRORES COMUNES
+════════════════════════════════════════ -->
+<section id="errores">
+  <div class="section-label">11 · Errores Comunes</div>
+  <h2>⚠️ Errores en Ingeniería de Confiabilidad</h2>
+
+  <div class="error-list">
+    <div class="error-item">
+      <div class="error-icon">❌</div>
+      <div>
+        <div class="error-title">Confundir MTBF con vida útil</div>
+        <div class="error-desc">MTBF = 1.000 h NO significa que el equipo dura 1.000 h. Es un PROMEDIO estadístico — un equipo puede fallar mucho antes o mucho después. La distribución Weibull es necesaria para entender el riesgo real en cualquier instante.</div>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="error-icon">❌</div>
+      <div>
+        <div class="error-title">Aplicar preventivo cuando β ≤ 1</div>
+        <div class="error-desc">Si β &lt; 1 (mortalidad infantil), reemplazar por calendario EMPEORA la situación: cada reemplazo reinicia el equipo en la fase de alta tasa de falla. Para β ≤ 1, el preventivo introduce nuevas fallas.</div>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="error-icon">❌</div>
+      <div>
+        <div class="error-title">Usar datos insuficientes para Weibull</div>
+        <div class="error-desc">Se necesitan mínimo 6-8 datos de falla para un análisis Weibull confiable. Con 2-3 datos los resultados son estadísticamente poco fiables y pueden llevar a decisiones incorrectas de mantenimiento.</div>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="error-icon">❌</div>
+      <div>
+        <div class="error-title">Ignorar datos censurados (suspensiones)</div>
+        <div class="error-desc">Si un equipo fue reemplazado preventivamente sin haber fallado, NO es una falla — es una censura. Ignorar este hecho sesga el análisis Weibull y subestima la verdadera confiabilidad del equipo.</div>
+      </div>
+    </div>
+    <div class="error-item">
+      <div class="error-icon">❌</div>
+      <div>
+        <div class="error-title">Asumir que disponibilidad = confiabilidad</div>
+        <div class="error-desc">A = 99% con MTTR = 1 h puede significar MTBF = solo 99 h (falla cada 4 días). Un equipo puede tener alta disponibilidad porque se repara muy rápido pero ser extremadamente poco confiable (falla constantemente).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     12. RESUMEN FINAL
+════════════════════════════════════════ -->
+<section id="resumen">
+  <div class="section-label">12 · Resumen</div>
+  <h2>📝 Resumen — Sesión 1.2</h2>
+
+  <div class="summary-grid">
+    <div class="summary-item">
+      <div class="summary-icon">📊</div>
+      <div class="summary-title">Confiabilidad R(t)</div>
+      <div class="summary-text">Probabilidad de funcionar sin falla hasta el tiempo t. Se modela con Weibull (β, η), Exponencial y Log-Normal.</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">⏱️</div>
+      <div class="summary-title">Disponibilidad A</div>
+      <div class="summary-text">A = MTBF / (MTBF + MTTR). Tres tipos: Inherente, Alcanzada, Operacional. Meta clase mundial: ≥ 95%.</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">🔧</div>
+      <div class="summary-title">Mantenibilidad M</div>
+      <div class="summary-text">Rapidez de restauración (MTTR). Depende de diseño, logística y factor humano. Se diseña, no se improvisa.</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">🛁</div>
+      <div class="summary-title">Curva de la Bañera</div>
+      <div class="summary-text">3 fases: Infantil (β&lt;1), Útil (β≈1), Desgaste (β&gt;1). El parámetro β define el mantenimiento óptimo.</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">🎯</div>
+      <div class="summary-title">Regla del 89/11</div>
+      <div class="summary-text">89% de fallas son aleatorias → PREDICTIVO. Solo el 11% con β&gt;1 justifica mantenimiento preventivo por tiempo.</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">📈</div>
+      <div class="summary-title">OEE</div>
+      <div class="summary-text">Disponibilidad × Rendimiento × Calidad. Meta ≥ 85%. Identifica cuál de las 6 grandes pérdidas atacar primero.</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">🔗</div>
+      <div class="summary-title">Sistemas</div>
+      <div class="summary-text">Serie: R cae con más componentes. Paralelo: redundancia eleva R significativamente. k-de-n para sistemas complejos.</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-icon">⚠️</div>
+      <div class="summary-title">Datos de Calidad</div>
+      <div class="summary-text">ISO 14224 para recopilar datos. «Garbage in, garbage out» — el CMMS (SAP/Maximo) determina la calidad del análisis.</div>
+    </div>
+  </div>
+
+  <!-- Próxima sesión -->
+  <div style="background:linear-gradient(135deg,rgba(14,116,144,0.2),rgba(6,182,212,0.1));border:1px solid rgba(6,182,212,0.3);border-radius:12px;padding:2rem;margin-top:2rem;">
+    <h3 style="font-size:1.2rem;margin-bottom:0.8rem;">🔮 Próxima Sesión: 1.3 — Análisis RAM y Modelado de Sistemas</h3>
+    <div class="cards cols-2" style="margin-top:1rem;">
+      <div>
+        <p style="font-size:0.9rem;"><strong>📚 Temas que vienen:</strong></p>
+        <ul style="color:#94a3b8;font-size:0.85rem;padding-left:1.2rem;margin-top:0.5rem;">
+          <li>Diagramas de Bloques de Confiabilidad (RBD) avanzados</li>
+          <li>Configuraciones serie, paralelo, k-de-n con Excel</li>
+          <li>Cálculo de R(t), A(t) y M(t) de sistemas complejos</li>
+          <li>OEE completo con casos reales industriales</li>
+        </ul>
+      </div>
+      <div>
+        <p style="font-size:0.9rem;"><strong>🔧 Taller 1 — Cálculo RAM con Excel:</strong></p>
+        <ul style="color:#94a3b8;font-size:0.85rem;padding-left:1.2rem;margin-top:0.5rem;">
+          <li>R(t) usando distribución Weibull</li>
+          <li>MTBF, MTTR y Disponibilidad</li>
+          <li>Confiabilidad de sistemas serie-paralelo</li>
+          <li>Intervalo óptimo de reemplazo preventivo</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Herramientas -->
+  <h3 style="margin-top:2rem;">🛠️ Herramientas de Software para Confiabilidad</h3>
+  <div class="cards cols-3" style="margin-top:1rem;">
+    <div class="card">
+      <h3>📊 Excel</h3>
+      <p style="font-size:0.85rem;">Cálculos RAM básicos, gráficos Weibull. Incluido en Office. <strong>Usado en este seminario.</strong></p>
+    </div>
+    <div class="card">
+      <h3>🐍 Python / R</h3>
+      <p style="font-size:0.85rem;">Análisis avanzado, Machine Learning predictivo. <strong>GRATUITO.</strong> Módulo 4 del seminario.</p>
+    </div>
+    <div class="card">
+      <h3>🔬 Weibull++</h3>
+      <p style="font-size:0.85rem;">ReliaSoft — Análisis Weibull avanzado, RBD, FMEA. Estándar industria (licencia paga).</p>
+    </div>
+    <div class="card">
+      <h3>📐 Minitab</h3>
+      <p style="font-size:0.85rem;">Análisis de confiabilidad y distribuciones estadísticas (licencia paga).</p>
+    </div>
+    <div class="card">
+      <h3>🚀 RAM Commander</h3>
+      <p style="font-size:0.85rem;">Diagramas RBD, simulación Monte Carlo para sistemas complejos.</p>
+    </div>
+    <div class="card">
+      <h3>📋 ISO 14224</h3>
+      <p style="font-size:0.85rem;">Norma para recopilar datos en oil & gas y petroquímica. Base para análisis confiables.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <strong>Seminario de Actualización — Gestión Avanzada de la Confiabilidad y el Mantenimiento Inteligente</strong><br>
+  Módulo 1 · Sesión 1.2 — Fundamentos de Ingeniería de Confiabilidad
+</footer>
+
+<!-- ═══════════════ SVG CHART SCRIPTS (no external dependencies) ═══════════════ -->
+<script>
+(function(){
+const TEAL='#06b6d4',RED='#ef4444',ORG='#f97316',GRN='#22c55e',PUR='#a855f7',GRY='#94a3b8',BG='#1e293b';
+
+// Helper: create SVG element
+function S(tag,attrs){
+  const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  for(const[k,v]of Object.entries(attrs||{})) el.setAttribute(k,v);
+  return el;
+}
+function svgChart(W,H){
+  const svg=S('svg',{viewBox:`0 0 ${W} ${H}`,preserveAspectRatio:'xMidYMid meet'});
+  svg.style.width='100%'; svg.style.height='auto';
+  return svg;
+}
+function addLine(svg,x1,y1,x2,y2,c,w=1,dash=''){
+  const l=S('line',{x1,y1,x2,y2,stroke:c,'stroke-width':w});
+  if(dash)l.setAttribute('stroke-dasharray',dash);
+  svg.appendChild(l);
+}
+function addText(svg,x,y,text,c=GRY,size=11,anchor='middle'){
+  const t=S('text',{x,y,fill:c,'font-size':size,'font-family':'Segoe UI,sans-serif','text-anchor':anchor});
+  t.textContent=text; svg.appendChild(t);
+}
+function polyline(svg,pts,c,w=2.5,fill='none',opacity=1){
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0]+','+p[1]).join(' ');
+  const path=S('path',{d,stroke:c,'stroke-width':w,fill,opacity,'stroke-linejoin':'round','stroke-linecap':'round'});
+  svg.appendChild(path);
+}
+function addLegend(svg, items, x, y){
+  items.forEach((it,i)=>{
+    const lx=x+i*200;
+    svg.appendChild(S('rect',{x:lx,y:y-6,width:14,height:3,fill:it[1],rx:1}));
+    addText(svg,lx+20,y,it[0],GRY,10,'start');
+  });
+}
+
+// ════════════════ CHART 1: R(t) ════════════════
+(function(){
+  const W=800,H=320,L=60,R=780,T=20,B=280;
+  const svg=svgChart(W,H);
+  // Grid
+  for(let i=0;i<=5;i++){
+    const y=T+(B-T)*i/5;
+    addLine(svg,L,y,R,y,'rgba(255,255,255,0.06)');
+    addText(svg,L-8,y+4,((5-i)*20)+'%',GRY,10,'end');
+  }
+  for(let i=0;i<=10;i++){
+    const x=L+(R-L)*i/10;
+    if(i%2===0) addText(svg,x,B+18,(i*100)+'h',GRY,10);
+  }
+  addText(svg,(L+R)/2,B+35,'Tiempo (horas)',GRY,11);
+  addText(svg,15,(T+B)/2,'Probabilidad',GRY,10,'middle');
+  // R(t) curve
+  const lam=0.002;
+  const rPts=[], fPts=[];
+  for(let i=0;i<=100;i++){
+    const t=i*10, x=L+(R-L)*i/100;
+    const rv=Math.exp(-lam*t), fv=1-rv;
+    rPts.push([x, T+(B-T)*(1-rv)]);
+    fPts.push([x, T+(B-T)*(1-fv)]);
+  }
+  // Fill under R(t)
+  const fillPts=[...rPts,[R,B],[L,B]];
+  const fd=fillPts.map((p,i)=>(i?'L':'M')+p[0]+','+p[1]).join(' ')+'Z';
+  svg.appendChild(S('path',{d:fd,fill:TEAL,opacity:'0.1',stroke:'none'}));
+  polyline(svg,rPts,TEAL,3);
+  // F(t) dashed
+  const fp=S('path',{d:fPts.map((p,i)=>(i?'L':'M')+p[0]+','+p[1]).join(' '),stroke:RED,'stroke-width':2,fill:'none','stroke-dasharray':'8,4'});
+  svg.appendChild(fp);
+  // Annotations
+  const x200=L+(R-L)*0.2, y200=T+(B-T)*(1-Math.exp(-0.4));
+  svg.appendChild(S('circle',{cx:x200,cy:y200,r:4,fill:TEAL}));
+  addText(svg,x200+8,y200-10,'67%',TEAL,11,'start');
+  const x500=L+(R-L)*0.5, y500=T+(B-T)*(1-Math.exp(-1));
+  svg.appendChild(S('circle',{cx:x500,cy:y500,r:4,fill:TEAL}));
+  addText(svg,x500+8,y500-10,'36.8%',TEAL,11,'start');
+  addLegend(svg,[['R(t) — Confiabilidad',TEAL],['F(t) — Prob. falla acumulada',RED]],L,H-5);
+  document.getElementById('chartRt').appendChild(svg);
+})();
+
+// ════════════════ CHART 2: CURVA DE LA BAÑERA ════════════════
+(function(){
+  const W=800,H=320,L=60,R=780,T=25,B=275;
+  const svg=svgChart(W,H);
+  // Axes
+  addLine(svg,L,B,R,B,'rgba(255,255,255,0.15)');
+  addLine(svg,L,T,L,B,'rgba(255,255,255,0.15)');
+  addText(svg,(L+R)/2,B+30,'Tiempo de Vida del Equipo',GRY,11);
+  addText(svg,15,(T+B)/2,'λ(t)',GRY,11);
+  // Phase labels
+  addText(svg,L+100,B+16,'Mortalidad Infantil',RED,10);
+  addText(svg,(L+R)/2,B+16,'Vida Útil Normal',TEAL,10);
+  addText(svg,R-120,B+16,'Desgaste',ORG,10);
+  // Phase dividers
+  const div1=L+(R-L)*0.35, div2=L+(R-L)*0.65;
+  addLine(svg,div1,T,div1,B,'rgba(255,255,255,0.08)',1,'4,4');
+  addLine(svg,div2,T,div2,B,'rgba(255,255,255,0.08)',1,'4,4');
+  // Phase 1: decay
+  const p1=[];
+  for(let i=0;i<=70;i++){
+    const t=i/70, x=L+(div1-L)*t;
+    const y=B-(B-T)*(0.85*Math.exp(-t*5)+0.12);
+    p1.push([x,y]);
+  }
+  polyline(svg,p1,RED,3);
+  // Phase 2: flat
+  const p2=[];
+  for(let i=0;i<=60;i++){
+    const x=div1-15+(div2-div1+30)*i/60;
+    const y=B-(B-T)*0.12;
+    p2.push([x,y]);
+  }
+  polyline(svg,p2,TEAL,3);
+  // Phase 3: wear
+  const p3=[];
+  for(let i=0;i<=70;i++){
+    const t=i/70, x=div2-15+(R-div2+15)*t;
+    const y=B-(B-T)*(0.1+0.75*Math.pow(t,2));
+    p3.push([x,y]);
+  }
+  polyline(svg,p3,ORG,3);
+  // Labels
+  addText(svg,L+60,T+25,'β < 1',RED,13);
+  addText(svg,(L+R)/2,T+25,'β ≈ 1',TEAL,13);
+  addText(svg,R-80,T+25,'β > 1',ORG,13);
+  addLegend(svg,[['Fase 1: Mortalidad Infantil',RED],['Fase 2: Vida Útil',TEAL],['Fase 3: Desgaste',ORG]],L,H-5);
+  document.getElementById('chartBathtub').appendChild(svg);
+})();
+
+// ════════════════ CHART 3: WEIBULL β ════════════════
+(function(){
+  const W=800,H=320,L=60,R=780,T=20,B=280;
+  const svg=svgChart(W,H);
+  // Grid
+  for(let i=0;i<=5;i++){
+    const y=T+(B-T)*i/5;
+    addLine(svg,L,y,R,y,'rgba(255,255,255,0.06)');
+    addText(svg,L-8,y+4,(3.5*(5-i)/5).toFixed(1),GRY,10,'end');
+  }
+  for(let i=0;i<=10;i++){
+    const x=L+(R-L)*i/10;
+    addText(svg,x,B+16,(i*0.2).toFixed(1),GRY,9);
+  }
+  addText(svg,(L+R)/2,B+35,'Tiempo normalizado (t/η)',GRY,11);
+  addText(svg,15,(T+B)/2,'λ(t)',GRY,10);
+  // Curves
+  const betas=[0.5,1.0,2.0,3.5], cols=[RED,TEAL,ORG,PUR];
+  const names=['β=0.5 Mortalidad Infantil','β=1.0 Aleatorio','β=2.0 Desgaste','β=3.5 Fatiga severa'];
+  betas.forEach((beta,bi)=>{
+    const pts=[];
+    for(let i=1;i<=100;i++){
+      const t=(i)*0.02, x=L+(R-L)*i/100;
+      let h=(beta/1.0)*Math.pow(t/1.0,beta-1);
+      h=Math.min(h,3.5);
+      const y=T+(B-T)*(1-h/3.5);
+      pts.push([x,Math.max(T,y)]);
+    }
+    polyline(svg,pts,cols[bi],2.5);
+  });
+  addLegend(svg,names.map((n,i)=>[n,cols[i]]),L-10,H-5);
+  document.getElementById('chartWeibull').appendChild(svg);
+})();
+
+// ════════════════ CHART 4: OEE ════════════════
+(function(){
+  const W=800,H=320,L=80,R=750,T=20,B=280;
+  const svg=svgChart(W,H);
+  const data=[89.6,90,96.9,78.1], meta=[90,95,99.9,85];
+  const labels=['Disponibilidad','Rendimiento','Calidad','OEE Total'];
+  const cols=[TEAL,ORG,GRN,PUR];
+  const barW=(R-L)/4*0.6, gap=(R-L)/4;
+  // Grid
+  for(let v=60;v<=100;v+=10){
+    const y=T+(B-T)*(1-(v-60)/45);
+    addLine(svg,L,y,R,y,'rgba(255,255,255,0.06)');
+    addText(svg,L-10,y+4,v+'%',GRY,10,'end');
+  }
+  // Bars
+  data.forEach((v,i)=>{
+    const x=L+gap*i+(gap-barW)/2;
+    const h=(B-T)*(v-60)/45;
+    const y=B-h;
+    svg.appendChild(S('rect',{x,y,width:barW,height:h,fill:cols[i],opacity:'0.7',rx:4}));
+    addText(svg,x+barW/2,y-6,v+'%',cols[i],12);
+    // Meta line
+    const my=T+(B-T)*(1-(meta[i]-60)/45);
+    addLine(svg,x-5,my,x+barW+5,my,'rgba(255,255,255,0.6)',2,'4,3');
+    addText(svg,x+barW+10,my+4,meta[i]+'%','rgba(255,255,255,0.5)',9,'start');
+    // Label
+    addText(svg,x+barW/2,B+16,labels[i],GRY,10);
+  });
+  addLegend(svg,[['% Obtenido (barras)',TEAL],['Meta Clase Mundial (línea)',GRY]],L,H-5);
+  document.getElementById('chartOEE').appendChild(svg);
+})();
+
+// ════════════════ CHART 5: SERIE VS PARALELO ════════════════
+(function(){
+  const W=800,H=320,L=60,R=750,T=20,B=280;
+  const svg=svgChart(W,H);
+  const r0=0.95;
+  // Grid
+  for(let v=40;v<=100;v+=10){
+    const y=T+(B-T)*(1-(v-40)/60);
+    addLine(svg,L,y,R,y,'rgba(255,255,255,0.06)');
+    addText(svg,L-8,y+4,v+'%',GRY,10,'end');
+  }
+  // X labels
+  for(let n=1;n<=10;n++){
+    const x=L+(R-L)*(n-1)/9;
+    addText(svg,x,B+18,n+' comp.',GRY,9);
+  }
+  addText(svg,(L+R)/2,B+35,'Componentes (R individual = 95%)',GRY,11);
+  // Serie
+  const sp=[], pp=[];
+  for(let n=1;n<=10;n++){
+    const x=L+(R-L)*(n-1)/9;
+    const sv=Math.pow(r0,n)*100, pv=(1-Math.pow(0.05,n))*100;
+    sp.push([x, T+(B-T)*(1-(sv-40)/60)]);
+    pp.push([x, T+(B-T)*(1-(Math.min(pv,100)-40)/60)]);
+  }
+  // Fill
+  const sf=[...sp,[R,B],[L,B]];
+  svg.appendChild(S('path',{d:sf.map((p,i)=>(i?'L':'M')+p[0]+','+p[1]).join(' ')+'Z',fill:RED,opacity:'0.08'}));
+  const pf=[...pp,[R,T],[L,T]];
+  svg.appendChild(S('path',{d:pf.map((p,i)=>(i?'L':'M')+p[0]+','+p[1]).join(' ')+'Z',fill:GRN,opacity:'0.08'}));
+  polyline(svg,sp,RED,3);
+  polyline(svg,pp,GRN,3);
+  // Dots
+  sp.forEach(p=>svg.appendChild(S('circle',{cx:p[0],cy:p[1],r:4,fill:RED})));
+  pp.forEach(p=>svg.appendChild(S('circle',{cx:p[0],cy:p[1],r:4,fill:GRN})));
+  // Labels on last point
+  addText(svg,sp[9][0]+5,sp[9][1]-10,'59.9%',RED,11,'start');
+  addText(svg,pp[9][0]+5,pp[9][1]+15,'100%',GRN,11,'start');
+  addLegend(svg,[['Serie (todos deben funcionar)',RED],['Paralelo (redundancia total)',GRN]],L,H-5);
+  document.getElementById('chartSistemas').appendChild(svg);
+})();
+
+// ─── SMOOTH SCROLL + ACTIVE NAV ────────────────
+const navItems = document.querySelectorAll('.nav-item');
+const sections = document.querySelectorAll('section');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const id = entry.target.getAttribute('id');
+      const nav = document.querySelector(`.nav-item[href="#${id}"]`);
+      if (nav) nav.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => observer.observe(s));
+})();
+</script>
+</body>
+</html>
