@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actividad 2: Centro de Clasificación RAM y OEE</title>
+<style>
+  :root {
+    --navy: #0f172a;
+    --navy2: #1e293b;
+    --teal: #0e7490;
+    --teal2: #06b6d4;
+    --orange: #f97316;
+    --orange2: #fb923c;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #eab308;
+    --light: #f8fafc;
+    --gray: #94a3b8;
+    --white: #ffffff;
+    --drag-bg: #334155;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+  body {
+    background: var(--navy);
+    color: var(--light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: rgba(15,23,42,0.95);
+    border-bottom: 2px solid var(--orange2);
+    padding: 1.2rem 2rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--white), var(--orange2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.3rem;
+  }
+  header p { color: var(--gray); font-size: 0.95rem; }
+
+  main {
+    flex: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    width: 100%;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    color: var(--white);
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .status-badge {
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.1);
+    color: var(--gray);
+  }
+  .status-badge.success { background: rgba(34,197,94,0.2); color: #bbf7d0; border: 1px solid var(--green); }
+
+  /* Drag & Drop general */
+  .workspace {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .items-bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 1rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    min-height: 80px;
+  }
+
+  .draggable {
+    background: var(--navy2);
+    border: 1px solid var(--gray);
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    cursor: grab;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+    user-select: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  }
+  .draggable:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.4); }
+  .draggable:active { cursor: grabbing; transform: scale(0.98); }
+
+  .drop-zones {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  .cols-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 768px) { .cols-3 { grid-template-columns: 1fr; } }
+
+  .drop-zone {
+    background: rgba(255,255,255,0.03);
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+  }
+  .drop-zone h3 {
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    color: var(--gray);
+    pointer-events: none;
+  }
+  
+  .drop-zone.drag-over {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--white);
+  }
+
+  /* Specific colors for Drop Zones */
+  .dz-disp { border-color: rgba(6,182,212,0.5); }
+  .dz-disp h3 { color: var(--teal2); }
+  .dz-disp.drag-over { background: rgba(6,182,212,0.1); border-color: var(--teal2); }
+
+  .dz-rend { border-color: rgba(249,115,22,0.5); }
+  .dz-rend h3 { color: var(--orange2); }
+  .dz-rend.drag-over { background: rgba(249,115,22,0.1); border-color: var(--orange2); }
+
+  .dz-cal { border-color: rgba(34,197,94,0.5); }
+  .dz-cal h3 { color: var(--green); }
+  .dz-cal.drag-over { background: rgba(34,197,94,0.1); border-color: var(--green); }
+
+  .dz-infantil { border-color: rgba(239,68,68,0.5); }
+  .dz-infantil h3 { color: var(--red); }
+  .dz-infantil.drag-over { background: rgba(239,68,68,0.1); border-color: var(--red); }
+
+  .dz-util { border-color: rgba(6,182,212,0.5); }
+  .dz-util h3 { color: var(--teal2); }
+  .dz-util.drag-over { background: rgba(6,182,212,0.1); border-color: var(--teal2); }
+
+  .dz-desgaste { border-color: rgba(249,115,22,0.5); }
+  .dz-desgaste h3 { color: var(--orange2); }
+  .dz-desgaste.drag-over { background: rgba(249,115,22,0.1); border-color: var(--orange2); }
+
+  /* Validate Button */
+  .btn-wrap { text-align: center; margin-top: 1.5rem; }
+  .btn {
+    background: var(--teal); color: white; border: none; padding: 0.8rem 2rem;
+    border-radius: 8px; font-size: 1.1rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn:hover { background: var(--teal2); box-shadow: 0 0 15px rgba(6,182,212,0.4); }
+  .btn:disabled { background: var(--gray); cursor: not-allowed; box-shadow: none; opacity: 0.7;}
+
+  .feedback {
+    margin-top: 1rem; padding: 1rem; border-radius: 6px; text-align: center;
+    font-weight: 600; display: none;
+  }
+  .feedback.error { display: block; background: rgba(239,68,68,0.15); border: 1px solid var(--red); color: #fecaca; }
+  .feedback.success { display: block; background: rgba(34,197,94,0.15); border: 1px solid var(--green); color: #bbf7d0; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Centro de Clasificación: Confiabilidad y OEE</h1>
+  <p>Arrastra los elementos hacia la categoría correcta según lo aprendido en la Sesión 1.2.</p>
+</header>
+
+<main>
+
+  <!-- MISIÓN 1: LAS 6 GRANDES PÉRDIDAS DEL OEE -->
+  <div class="workspace">
+    <div class="section-title">
+      <span>Misión 1: Clasificador de Pérdidas OEE</span>
+      <span class="status-badge" id="status-m1">Pendiente</span>
+    </div>
+    <p style="color:var(--gray); margin-bottom:1rem; font-size:0.95rem;">El TPM define 6 grandes pérdidas. Clasifica cada evento de la planta en el factor del OEE que afecta directamente.</p>
+    
+    <div class="items-bank" id="bank-m1" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="oee-p1" data-target="disp">Motor quemado (Parada no programada)</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="oee-p2" data-target="disp">Cambio de molde y calibración</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="oee-p3" data-target="rend">Atasco de botellas (Parada de 2 min)</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="oee-p4" data-target="rend">Operar al 80% de velocidad por vibración</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="oee-p5" data-target="cal">Lotes con empaque rasgado</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="oee-p6" data-target="cal">Desperdicio inicial hasta estabilizar la máquina</div>
+    </div>
+
+    <div class="drop-zones cols-3">
+      <div class="drop-zone dz-disp" id="dz-disp" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>Afecta Disponibilidad</h3>
+      </div>
+      <div class="drop-zone dz-rend" id="dz-rend" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>Afecta Rendimiento</h3>
+      </div>
+      <div class="drop-zone dz-cal" id="dz-cal" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>Afecta Calidad</h3>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <button class="btn" id="btn-m1" onclick="validateM1()">Verificar Misión 1</button>
+      <div id="fb-m1" class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- MISIÓN 2: CURVA DE LA BAÑERA Y WEIBULL -->
+  <div class="workspace">
+    <div class="section-title">
+      <span>Misión 2: Patrones de Falla (Weibull)</span>
+      <span class="status-badge" id="status-m2">Pendiente</span>
+    </div>
+    <p style="color:var(--gray); margin-bottom:1rem; font-size:0.95rem;">Arrastra el valor estadístico de Weibull (Beta β) a su fase correspondiente en la Curva de la Bañera.</p>
+    
+    <div class="items-bank" id="bank-m2" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="w-p1" data-target="infantil" style="font-size:1.2rem; font-weight:800; border-left:4px solid var(--purple);">β &lt; 1</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="w-p2" data-target="util" style="font-size:1.2rem; font-weight:800; border-left:4px solid var(--purple);">β = 1</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="w-p3" data-target="desgaste" style="font-size:1.2rem; font-weight:800; border-left:4px solid var(--purple);">β &gt; 1</div>
+    </div>
+
+    <div class="drop-zones cols-3">
+      <div class="drop-zone dz-infantil" id="dz-infantil" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>Mortalidad Infantil</h3>
+        <span style="font-size:0.8rem; color:var(--gray); text-align:center;">Tasa decreciente. (Errores de instalación)</span>
+      </div>
+      <div class="drop-zone dz-util" id="dz-util" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>Vida Útil / Aleatoria</h3>
+        <span style="font-size:0.8rem; color:var(--gray); text-align:center;">Tasa constante. (Fallas imprevistas)</span>
+      </div>
+      <div class="drop-zone dz-desgaste" id="dz-desgaste" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>Desgaste Severo</h3>
+        <span style="font-size:0.8rem; color:var(--gray); text-align:center;">Tasa creciente. (Degradación/Fatiga)</span>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <button class="btn" id="btn-m2" onclick="validateM2()">Verificar Misión 2</button>
+      <div id="fb-m2" class="feedback"></div>
+    </div>
+  </div>
+
+  <!-- MISIÓN 3: INDICADORES RAM -->
+  <div class="workspace">
+    <div class="section-title">
+      <span>Misión 3: Indicadores Clave (MTBF vs MTTR)</span>
+      <span class="status-badge" id="status-m3">Pendiente</span>
+    </div>
+    <p style="color:var(--gray); margin-bottom:1rem; font-size:0.95rem;">Clasifica cada escenario con el indicador principal que lo compone.</p>
+    
+    <div class="items-bank" id="bank-m3" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="k-p1" data-target="mtbf">Frecuencia de fallas en una bomba recíproca</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="k-p2" data-target="mttr">Tiempo empleado en diagnosticar y cambiar un sello</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="k-p3" data-target="mttf">Ciclo de vida de un rodamiento antes de destruirse (No reparable)</div>
+      <div class="draggable" draggable="true" ondragstart="drag(event)" id="k-p4" data-target="mttr">Eficiencia del equipo de mecánicos en la intervención</div>
+    </div>
+
+    <div class="drop-zones cols-3">
+      <div class="drop-zone dz-util" id="dz-mtbf" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>MTBF</h3>
+      </div>
+      <div class="drop-zone dz-infantil" id="dz-mttr" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>MTTR</h3>
+      </div>
+      <div class="drop-zone dz-desgaste" id="dz-mttf" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <h3>MTTF</h3>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <button class="btn" id="btn-m3" onclick="validateM3()">Verificar Misión 3</button>
+      <div id="fb-m3" class="feedback"></div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // Drag and Drop Logic
+  function allowDrop(ev) {
+    ev.preventDefault();
+    if(ev.target.classList.contains('drop-zone') || ev.target.classList.contains('items-bank')){
+      ev.target.classList.add('drag-over');
+    }
+  }
+
+  function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    document.querySelectorAll('.drop-zone, .items-bank').forEach(d => d.classList.remove('drag-over'));
+    
+    var data = ev.dataTransfer.getData("text");
+    var draggedElement = document.getElementById(data);
+    
+    // Find the nearest drop-zone or bank
+    let dropTarget = ev.target;
+    while(dropTarget && !dropTarget.classList.contains('drop-zone') && !dropTarget.classList.contains('items-bank')) {
+      dropTarget = dropTarget.parentElement;
+    }
+
+    if (dropTarget) {
+      dropTarget.appendChild(draggedElement);
+    }
+  }
+
+  // Remove drag-over effect when dragging leaves
+  document.addEventListener('dragenter', function(event) {
+    if (event.target.classList && (event.target.classList.contains('drop-zone') || event.target.classList.contains('items-bank'))) {
+      event.target.classList.add('drag-over');
+    }
+  });
+
+  document.addEventListener('dragleave', function(event) {
+    if (event.target.classList && (event.target.classList.contains('drop-zone') || event.target.classList.contains('items-bank'))) {
+      event.target.classList.remove('drag-over');
+    }
+  });
+
+  document.addEventListener('dragend', function(event) {
+      document.querySelectorAll('.drop-zone, .items-bank').forEach(d => d.classList.remove('drag-over'));
+  });
+
+  // Validation Logic
+  function validateZone(zoneId, targetValue) {
+    const zone = document.getElementById(zoneId);
+    const items = zone.querySelectorAll('.draggable');
+    let isCorrect = true;
+    let count = 0;
+
+    items.forEach(item => {
+      count++;
+      if (item.getAttribute('data-target') !== targetValue) {
+        isCorrect = false;
+      }
+    });
+
+    return { correct: isCorrect, count: count };
+  }
+
+  function validateM1() {
+    const totalItems = document.getElementById('bank-m1').querySelectorAll('.draggable').length + 
+                       document.querySelectorAll('#dz-disp .draggable, #dz-rend .draggable, #dz-cal .draggable').length;
+    
+    const dDisp = validateZone('dz-disp', 'disp');
+    const dRend = validateZone('dz-rend', 'rend');
+    const dCal = validateZone('dz-cal', 'cal');
+    
+    const fb = document.getElementById('fb-m1');
+    const totalPlaced = dDisp.count + dRend.count + dCal.count;
+
+    if (totalPlaced < totalItems) {
+      fb.className = 'feedback error'; fb.innerHTML = '⚠️ Debes clasificar todos los elementos antes de verificar.';
+      return;
+    }
+
+    if (dDisp.correct && dRend.correct && dCal.correct) {
+      fb.className = 'feedback success'; 
+      fb.innerHTML = '✅ ¡Excelente! Has interiorizado correctamente las 6 grandes pérdidas del OEE.';
+      document.getElementById('status-m1').innerText = "Completado";
+      document.getElementById('status-m1').className = "status-badge success";
+      lockDraggables('dz-disp'); lockDraggables('dz-rend'); lockDraggables('dz-cal');
+      document.getElementById('btn-m1').disabled = true;
+    } else {
+      fb.className = 'feedback error'; 
+      fb.innerHTML = '❌ Hay errores en la clasificación. <br><small>Pista: Las paradas largas afectan Disponibilidad, las breves o bajas de velocidad afectan Rendimiento.</small>';
+    }
+  }
+
+  function validateM2() {
+    const totalItems = 3;
+    const dInf = validateZone('dz-infantil', 'infantil');
+    const dUtil = validateZone('dz-util', 'util');
+    const dDes = validateZone('dz-desgaste', 'desgaste');
+    
+    const fb = document.getElementById('fb-m2');
+    const totalPlaced = dInf.count + dUtil.count + dDes.count;
+
+    if (totalPlaced < totalItems) {
+      fb.className = 'feedback error'; fb.innerHTML = '⚠️ Debes asignar todos los parámetros de Weibull.'; return;
+    }
+
+    if (dInf.correct && dUtil.correct && dDes.correct && dInf.count===1 && dUtil.count===1 && dDes.count===1) {
+      fb.className = 'feedback success'; 
+      fb.innerHTML = '✅ ¡Perfecto! Dominas cómo Weibull modela matemáticamente la curva de la Bañera.';
+      document.getElementById('status-m2').innerText = "Completado";
+      document.getElementById('status-m2').className = "status-badge success";
+      lockDraggables('dz-infantil'); lockDraggables('dz-util'); lockDraggables('dz-desgaste');
+      document.getElementById('btn-m2').disabled = true;
+    } else {
+      fb.className = 'feedback error'; 
+      fb.innerHTML = '❌ Configuración incorrecta. Relaciona el valor de Beta con el signo correcto.';
+    }
+  }
+
+  function validateM3() {
+    const totalItems = 4;
+    const dMtbf = validateZone('dz-mtbf', 'mtbf');
+    const dMttr = validateZone('dz-mttr', 'mttr');
+    const dMttf = validateZone('dz-mttf', 'mttf');
+    
+    const fb = document.getElementById('fb-m3');
+    const totalPlaced = dMtbf.count + dMttr.count + dMttf.count;
+
+    if (totalPlaced < totalItems) {
+      fb.className = 'feedback error'; fb.innerHTML = '⚠️ Por favor, posiciona todos los escenarios en los KPIs.'; return;
+    }
+
+    if (dMtbf.correct && dMttr.correct && dMttf.correct) {
+      fb.className = 'feedback success'; 
+      fb.innerHTML = '✅ ¡Sensacional! Has diferenciado bien los equipos reparables (MTBF/MTTR) de los desechables (MTTF).';
+      document.getElementById('status-m3').innerText = "Completado";
+      document.getElementById('status-m3').className = "status-badge success";
+      lockDraggables('dz-mtbf'); lockDraggables('dz-mttr'); lockDraggables('dz-mttf');
+      document.getElementById('btn-m3').disabled = true;
+      
+      checkAllCompleted();
+    } else {
+      fb.className = 'feedback error'; 
+      fb.innerHTML = '❌ Hay un error. <br><small>Recuerda: Fallas en equipos se miden con MTBF, reparaciones con MTTR, piezas de un solo uso con MTTF.</small>';
+    }
+  }
+
+  function lockDraggables(zoneId) {
+    const items = document.getElementById(zoneId).querySelectorAll('.draggable');
+    items.forEach(item => {
+      item.setAttribute('draggable', 'false');
+      item.style.cursor = 'default';
+      item.style.borderLeft = '4px solid var(--green)';
+      item.style.boxShadow = 'none';
+    });
+  }
+
+  function checkAllCompleted() {
+    if(document.getElementById('status-m1').innerText === 'Completado' && 
+       document.getElementById('status-m2').innerText === 'Completado' && 
+       document.getElementById('status-m3').innerText === 'Completado') {
+      
+      setTimeout(() => {
+        alert("🎉 ¡FELICITACIONES! Has completado con éxito la actividad del Centro de Clasificación RAM. Eres un experto en las bases de Confiabilidad.");
+      }, 500);
+    }
+  }
+
+</script>
+</body>
+</html>
